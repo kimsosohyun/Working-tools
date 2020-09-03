@@ -1,0 +1,17 @@
+body{
+    background-color: aquamarine;
+    width: 100px;
+    height: 100px;
+}
+.div1 {
+    width: 800px;
+    height: 400px;
+    background: url("../img/kimso.jpg");
+    background-size: contain;
+}
+.div2 {
+    width: 100px;
+    height: 50px;
+    background: url("../img/down.jpg");
+    background-size: contain;
+}

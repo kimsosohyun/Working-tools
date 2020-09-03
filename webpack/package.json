@@ -1,0 +1,31 @@
+{
+  "name": "webpack",
+  "version": "1.0.0",
+  "description": "test webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "webpack-dev-server --compress --open"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^4.2.2",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^6.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "install": "^0.13.0",
+    "less": "^3.12.2",
+    "less-loader": "^7.0.0",
+    "mini-css-extract-plugin": "^0.11.0",
+    "style-loader": "^1.2.1",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "html-withimg-loader": "^0.1.16"
+  }
+}
