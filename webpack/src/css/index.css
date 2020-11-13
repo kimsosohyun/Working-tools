@@ -14,4 +14,16 @@ body{
     height: 50px;
     background: url("../img/down.jpg");
     background-size: contain;
+    transform: rotate(30deg);
+    display: flex;
+}
+.div3 {
+    position: relative;
+    width: 100px;
+    height: 200px;
+}
+.div4 {
+    position: relative;
+    width: 100px;
+    height: 200px;
 }
