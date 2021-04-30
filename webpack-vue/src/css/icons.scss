@@ -1,0 +1,269 @@
+@font-face {
+  font-family: 'iconmoon';
+  src:
+    url('../assets/fonts/iconmoon.ttf?2z8os7') format('truetype'),
+    url('../assets/fonts/iconmoon.woff?2z8os7') format('woff'),
+    url('../assets/fonts/iconmoon.svg?2z8os7#iconmoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'iconmoon' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Enable Ligatures ================ */
+  letter-spacing: 0;
+  -webkit-font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga=1";
+  -moz-font-feature-settings: "liga";
+  -ms-font-feature-settings: "liga"1;
+  font-feature-settings: "liga";
+  -webkit-font-variant-ligatures: discretionary-ligatures;
+  font-variant-ligatures: discretionary-ligatures;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-this-device:before {
+  content: "\e946";
+}
+.icon-network-detection:before {
+  content: "\e947";
+}
+.icon-warning-information:before {
+  content: "\e948";
+}
+.icon-other-device:before {
+  content: "\e949";
+}
+.icon-clear-all:before {
+  content: "\e94a";
+}
+.icon-main-device-en:before {
+  content: "\e94b";
+}
+.icon-main-device-cn:before {
+  content: "\e94c";
+}
+.icon-nvr:before {
+  content: "\e94d";
+}
+.icon-vertical-view:before {
+  content: "\e900";
+}
+.icon-horizontal-view:before {
+  content: "\e945";
+}
+.icon-topo-camera:before {
+  content: "\e901";
+}
+.icon-topo-computer:before {
+  content: "\e902";
+}
+.icon-topo-router:before {
+  content: "\e903";
+}
+.icon-topo-switch:before {
+  content: "\e904";
+}
+.icon-topo-unknown:before {
+  content: "\e905";
+}
+.icon-topo-wirelessap:before {
+  content: "\e906";
+}
+.icon-edit:before {
+  content: "\e907";
+}
+.icon-close:before {
+  content: "\e908";
+}
+.icon-save:before {
+  content: "\e909";
+}
+.icon-delete:before {
+  content: "\e90a";
+}
+.icon-tool:before {
+  content: "\e90b";
+}
+.icon-warning:before {
+  content: "\e90c";
+}
+.icon-error:before {
+  content: "\e90d";
+}
+.icon-success:before {
+  content: "\e90e";
+}
+.icon-help:before {
+  content: "\e90f";
+}
+.icon-view:before {
+  content: "\e910";
+}
+.icon-add:before {
+  content: "\e911";
+}
+.icon-round:before {
+  content: "\e912";
+}
+.icon-refresh:before {
+  content: "\e913";
+}
+.icon-person:before {
+  content: "\e914";
+}
+.icon-lock:before {
+  content: "\e915";
+}
+.icon-disabled:before {
+  content: "\e916";
+}
+.icon-turn-open:before {
+  content: "\e917";
+}
+.icon-remove:before {
+  content: "\e918";
+}
+.icon-poe:before {
+  content: "\e919";
+}
+.icon-status:before {
+  content: "\e91a";
+}
+.icon-switcher:before {
+  content: "\e91b";
+}
+.icon-router:before {
+  content: "\e91c";
+}
+.icon-safe:before {
+  content: "\e91d";
+}
+.icon-qos:before {
+  content: "\e91e";
+}
+.icon-clear:before {
+  content: "\e91f";
+}
+.icon-restore:before {
+  content: "\e920";
+}
+.icon-reboot:before {
+  content: "\e921";
+}
+.icon-upload:before {
+  content: "\e922";
+}
+.icon-backup:before {
+  content: "\e923";
+}
+.icon-import:before {
+  content: "\e924";
+}
+.icon-upfile:before {
+  content: "\e925";
+}
+.icon-file:before {
+  content: "\e926";
+}
+.icon-port:before {
+  content: "\e927";
+}
+.icon-calendar:before {
+  content: "\e928";
+}
+.icon-time:before {
+  content: "\e929";
+}
+.icon-download:before {
+  content: "\e92a";
+}
+.icon-setting:before {
+  content: "\e92b";
+}
+.icon-topo-port:before {
+  content: "\e92c";
+}
+.icon-topo-login:before {
+  content: "\e92d";
+}
+.icon-zoomout:before {
+  content: "\e92e";
+}
+.icon-visualization:before {
+  content: "\e92f";
+}
+.icon-wait:before {
+  content: "\e930";
+}
+.icon-search:before {
+  content: "\e931";
+}
+.icon-list:before {
+  content: "\e932";
+}
+.icon-camera:before {
+  content: "\e933";
+}
+.icon-zoomin:before {
+  content: "\e934";
+}
+.icon-notice-renew:before {
+  content: "\e935";
+}
+.icon-cloud-backup:before {
+  content: "\e936";
+}
+.icon-collapse:before {
+  content: "\e937";
+}
+.icon-expand:before {
+  content: "\e938";
+}
+.icon-topo-delete:before {
+  content: "\e939";
+}
+.icon-dialog-back:before {
+  content: "\e93a";
+}
+.icon-topo-printer:before {
+  content: "\e93b";
+}
+.icon-topo-server:before {
+  content: "\e93c";
+}
+.icon-topo-attendance:before {
+  content: "\e93d";
+}
+.icon-arrow-left:before {
+  content: "\e93e";
+}
+.icon-double-arrow-left:before {
+  content: "\e93f";
+}
+.icon-admin:before {
+  content: "\e940";
+}
+.icon-common:before {
+  content: "\e941";
+}
+.icon-poe-disabled:before {
+  content: "\e942";
+}
+.icon-port-disabled:before {
+  content: "\e943";
+}
+.icon-port-poe:before {
+  content: "\e944";
+}
