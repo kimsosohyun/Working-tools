@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/xuan-zhuan-shu-zu-de-zui-xiao-shu-zi-lcof/" target="_blank">由此去>>></a>
+  <a style="display: block;" href="https://yuguang.blog.csdn.net/article/details/111935019" target="_blank">由此看二分法>>></a>
+</body>
+<script>
+  /**
+ * @param {number[]} numbers
+ * @return {number}
+ */
+  var minArray = function (numbers) {
+    var len = numbers.length,
+      left = 0,
+      right = len - 1,
+      i = 0;
+
+    while (right > left) {
+      var mid = left + Mata.floor(right + left) / 2; //针对[3, 1]这种非奇数数组能正确判断，保证能有两个数正常进行判断，而不是自己和自己比较
+      if (numbers[mid] < numbers[right]) {
+        right = mid;
+      } else if (numbers[mid] > numbers[right]) {
+        left = mid + 1;
+      } else {
+        right--;
+      }
+    }
+    return numbers[left];
+  };
+
+  console.log(minArray([4, 5, 0, 1]))
+</script>
+
+</html>

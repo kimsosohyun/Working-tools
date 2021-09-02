@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/ji-qi-ren-de-yun-dong-fan-wei-lcof/" target="_blank">由此去>>></a>
+  <div>
+    DFS:深度优先搜索，先朝一个方向搜到底，再回溯至上个节点，沿另一个方向搜索，以此类推
+    BFS:广度优先搜索
+  </div>
+</body>
+<script>
+  /**
+ * @param {number} m
+ * @param {number} n
+ * @param {number} k
+ * @return {number}
+ */
+  var movingCount = function (m, n, k) {
+    var map = {};
+    return dfs(m, n, k, 0, 0, map);
+  };
+
+  var dfs = function (m, n, k, r, c, map) {
+    if (r > m - 1 || c > n - 1 || r < 0 || c < 0 || sum(r, c) > k || map[`${r},${c}`]) {
+      //以上条件满足时不计数
+      return 0;
+    }
+    map[`${r},${c}`] = true;// 特殊标识，免得重复添加
+    return 1 + dfs(m, n, k, r + 1, c, map) + dfs(m, n, k, r, c + 1, map); 
+    //通过三角形易知从（0，0）开始只有右边和下边的元素能满足条件，所以直接舍弃加上边和左边的元素
+    //满足题目需求则基数+1,从（0，0）点开始考虑，然后直接递归计算总数
+  }
+
+  var sum = function (row, col) {
+    var arr = [];
+
+    arrR = row.toString().split("");
+    arrC = col.toString().split("");
+    arr = arr.concat(arrR).concat(arrC);
+
+    return arr.reduce((pre, cur) => { return Number(pre) + Number(cur) })
+  }
+
+  console.log(movingCount(38, 15, 9))
+</script>
+
+</html>

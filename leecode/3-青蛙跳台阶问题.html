@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/qing-wa-tiao-tai-jie-wen-ti-lcof/" target="_blank">由此去>>></a>
+</body>
+<script>
+  //此题同斐波那契数列，最后一次跳只能跳1或者跳2，所以跳n台阶的方法数等于跳n-1台阶（最后跳1）的方法数加上跳n-2台阶（最后跳2）的方法数，即：f(n) = f(n-1) + f(n-2);
+  //若青蛙能跳1，2，3，则f(n) = f(n-1) + f(n-2) + f(n-3);
+
+  var numWays = function (n) {
+    var a = 1,
+      b = 2,
+      sum;
+    for (var i = 1; i < n; i++) { //从2开始进入循环累加
+      sum = (b + a) % 1000000007;
+      a = b;
+      b = sum
+
+    }
+    return a;
+
+  };
+
+  console.log(numWays(7))
+</script>
+
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/fei-bo-na-qi-shu-lie-lcof/" target="_blank">由此去>>></a>
+</body>
+<script>
+
+  // 第一种：用数组记录斐波那契数列的值  
+  // 时间复杂度：O(n) 遍历n次
+  // 空间复杂度：O(n) n个值全都被存在内存里
+  var fib1 = function (n) {
+    switch (n) {
+      case 0:
+        return 0;
+        break;
+      case 1:
+        return 1;
+        break;
+      default:
+        var arr = [];
+        arr[0] = 0;
+        arr[1] = 1;
+        for (i = 2; i <= n; i++) {
+          arr[i] = (arr[i - 1] + arr[i - 2]) % 1000000007;
+        }
+        return arr[n];
+    }
+  };
+
+  // 第二种：动态规划
+  // 时间复杂度：O(n) 遍历n次
+  // 空间复杂度：O(1) 每次其实只用保留n-1和n-2的值就ok
+  var fib2 = function (n) {
+    var a = 0,
+      b = 1,
+      sum;
+    for (i = 0; i < n; i++) {
+      sum = (b + a) % 1000000007;
+      a = b;
+      b = sum;
+    }
+    return a;
+  };
+
+  console.log(fib2(45));
+</script>
+
+</html>

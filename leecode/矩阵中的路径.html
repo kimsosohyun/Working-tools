@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/ju-zhen-zhong-de-lu-jing-lcof/" target="_blank">由此去>>></a>
+</body>
+<script>
+  /**
+ * @param {character[][]} board
+ * @param {string} word
+ * @return {boolean}
+ */
+  var exist = function (board, word) {
+    var row = board.length - 1,
+      col = board[0].length - 1,
+      len = word.length - 1;
+
+    for (var i = 0; i <= row; i++) {
+      for (var j = 0; j <= col; j++) {
+        if (dfs(board, word, i, j, 0)) {
+          return true;
+        }
+      }
+    }
+
+    //循环起点结束都没找到
+    return false;
+  };
+
+  var dfs = function (board, word, i, j, k) {
+    var row = board.length - 1,
+      col = board[0].length - 1,
+      len = word.length - 1;
+
+    if (i < 0 || j < 0 || i > row || j > col || board[i][j] !== word[k]) {
+      return false;
+    }
+    if (k === len) {
+      return true; //说明找到了此路径
+    }
+    var save = board[i][j];
+
+    board[i][j] = "/"; //同一个单元格内的字母不允许被重复使用
+
+    var res = dfs(board, word, i - 1, j, k + 1) || dfs(board, word, i + 1, j, k + 1) || dfs(board, word, i, j + 1, k + 1) || dfs(board, word, i, j - 1, k + 1); //测试上，下，左，右四个相邻格子
+
+    if (res) {
+      return res;
+    } else {
+      //说明没有找到符合的路径，还原数组，从下个起点开始继续找
+      board[i][j] = save;
+      return res;
+    }
+  }
+
+
+
+  console.log(exist([["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], "ABCCED"))
+</script>
+
+</html>
