@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/jian-sheng-zi-lcof/" target="_blank">由此去>>></a>
+
+  <a style="display: block;" href="https://sihai.blog.csdn.net/article/details/117639173?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-17.essearch_pc_relevant&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-17.essearch_pc_relevant" target="_blank">
+    由此看动态规划>>>
+  </a>
+</body>
+<script>
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  var cuttingRope = function (n) {
+    var dp = [];
+      dp[1] = 1;
+   
+
+    for (var i = 2; i <= n; i++) { //总长度
+      for (var j = 1; j < i; j++) //第一次剪的长度
+      {
+        dp[i] = Math.max(dp[i], Math.max(j * (i - j), j * dp[i - j]))
+      }
+    }
+    return dp[n];
+
+  };
+
+  console.log(cuttingRope(20));
+</script>
+
+</html>
