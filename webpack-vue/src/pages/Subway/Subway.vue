@@ -458,7 +458,7 @@ export default {
 
 
       vm.graph.changeSize(vm.cw, vm.ch)
-      vm.graph.fitCenter();
+      // vm.graph.fitCenter();
       vm.graph.zoomTo(0.8, { x: vm.cw / 2, y: vm.ch / 2 });
 
     }
@@ -466,6 +466,7 @@ export default {
   methods: {
     showBg(ev, item, color) {
       if (this.chooseEdge !== item.id) {
+
         ev.target.style.background = color ? color : item.color;
       }
     },
