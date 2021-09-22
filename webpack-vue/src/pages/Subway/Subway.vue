@@ -61,8 +61,8 @@ export default {
     this.cw = document.getElementById("container").offsetWidth;
     this.ch = document.getElementById("container").offsetHeight;
 
-    this.getMetroData("cd");
-    this.getMetroInfo("cd");
+    this.getMetroData("sh");
+    this.getMetroInfo("sh");
 
     const textLg = [
       { x: 0, y: -6, ta: "center" },
@@ -456,11 +456,9 @@ export default {
       vm.cw = document.getElementById("container").offsetWidth;
       vm.ch = document.getElementById("container").offsetHeight;
 
-
       vm.graph.changeSize(vm.cw, vm.ch)
       // vm.graph.fitCenter();
-      vm.graph.zoomTo(0.8, { x: vm.cw / 2, y: vm.ch / 2 });
-
+      // vm.graph.zoomTo(0.8, { x: vm.cw / 2, y: vm.ch / 2 });
     }
   },
   methods: {
@@ -511,7 +509,7 @@ export default {
      
     },
     getMetroInfo(city) {
-      axios.get(`${MOCK_HTTP}/goform/get${city}MetroInfo`).then((res) => this.handleInfoRes(res));
+      axios.get(`/goform/get${city}MetroInfo`).then((res) => this.handleInfoRes(res));
     },
     handleInfoRes(res) {
       if (res.status != 200) {
@@ -526,7 +524,7 @@ export default {
       console.log("metroInfo", this.metroInfo[0]);
     },
     getMetroData(city) {
-      axios.get(`${MOCK_HTTP}/goform/get${city}Metro`).then((res) => this.handleDataRes(res));
+      axios.get(`/goform/get${city}Metro`).then((res) => this.handleDataRes(res));
     },
     handleDataRes(res) {
       if (res.status != 200) {
@@ -623,7 +621,11 @@ export default {
           controlPointsObj.y = controlPoints[1];
           newControlPoint.push(controlPointsObj);
         });
+
+        //polyline:controlPoints	控制点数组	Array	不指定时根据 A* 算法自动生成折线。
+        //若指定了，则按照 controlPoints 指定的位置进行弯折。示例：[{ x: 10, y: 20 }, { x: 20, y: 25 }, ...]
         obj.controlPoints = newControlPoint;
+
         let fx = newControlPoint[0].x,
           fy = newControlPoint[0].y,
           lx = newControlPoint[newControlPoint.length - 1].x,
@@ -641,10 +643,10 @@ export default {
         if (!obj.source || !obj.target) {
           //高德地图提供数据有些绘图点不与出发点或结束点的位置重合，需要采用此来修正
           nodesArr.forEach((item) => {
-            if (Math.abs(item.x - fx) < 10 && Math.abs(item.y - fy) < 10) {
+            if (Math.abs(item.x - fx) < 30 && Math.abs(item.y - fy) < 30) {
               obj.source = item.id;
             }
-            if (Math.abs(item.x - lx) < 10 && Math.abs(item.y - ly) < 10) {
+            if (Math.abs(item.x - lx) < 30 && Math.abs(item.y - ly) < 30) {
               obj.target = item.id;
             }
           });

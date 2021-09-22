@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <a href="https://leetcode-cn.com/problems/jian-sheng-zi-lcof/" target="_blank">由此去>>></a>
+
+    <a style="display: block;" href="https://blog.csdn.net/weixin_34194359/article/details/91363029" target="_blank">
+        由此看BigInt>>>
+    </a>
+    <div>
+        BigInt 是一种内置对象，它提供了一种方法来表示大于 2^53 - 1 的整数。这原本是 Javascript中可以用 Number 表示的最大数字。BigInt 可以表示任意大的整数。
+        BigInt不能和Number进行计算
+        BigInt不能使用Math的任何方法
+    </div>
+</body>
+<script>
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var cuttingRope = function (n) {
+        var dp = [];
+        dp[1] = 1n;
+
+        for (var i = 2; i <= n; i++) { //总长度
+            for (var j = 1; j < i; j++) //第一次剪的长度
+            {
+                if (!dp[i]) {
+                    dp[i] = 0n;
+                }
+                dp[i] = max(dp[i], max(BigInt(j) * BigInt(i - j), BigInt(j) * dp[i - j])%1000000007n)
+            }
+        }
+        return dp[n];
+
+    };
+
+    var max = function (a, b) {
+        return a > b ? a : b;
+    }
+
+
+      console.log(cuttingRope(120));
+</script>
+
+</html>

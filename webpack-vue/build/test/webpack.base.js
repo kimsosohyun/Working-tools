@@ -12,9 +12,12 @@ module.exports= {
         app:'./src/main.js'
     },
     output: {
-        path: path.resolve(__dirname, '../../dist'),//__dirname：以当前文件所在绝对路径为起点，不包含当前文件，__filename包含当前文件
+        //path: 项目打包所存放到的路径，此路径中包含项目所有文件和目录。应该是一个绝对路径。
+        //publicPath: 静态文件打包存放的目录。静态文件是指 img 的src ,link ，script 标签等所指向的文件。publicPath 是相对于path 所在的路径。是一个相对路径。
+
+        path: path.resolve(__dirname, '../dist'),//__dirname：以当前文件所在绝对路径为起点，不包含当前文件，__filename包含当前文件
         filename: 'js/[name].js',
-        publicPath: "http://192.168.98.62:6161/"
+        publicPath: "/"
     },
     module:{ // 对 高级js语法 和 非js文件 的处理
         rules: [
@@ -144,7 +147,7 @@ module.exports= {
                 default: {
                     minChunks: 2,
                     priority: -30,
-                    reuseExistingChunk: true // 如果当前块包含已从主捆绑包中拆分出的模块，则将重用该模块，而不是生成新的模块。这可能会影响块的结果文件名。
+                    reuseExistingChunk: false // 如果当前块包含已从主捆绑包中拆分出的模块，则将重用该模块，而不是生成新的模块。这可能会影响块的结果文件名。
                 }
             }
         }

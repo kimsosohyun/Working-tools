@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/shu-zhi-de-zheng-shu-ci-fang-lcof/solution/mian-shi-ti-16-shu-zhi-de-zheng-shu-ci-fang-kuai-s/"
+    target="_blank">由此去>>></a>
+</body>
+<script>
+  /**
+ * @param {number} x
+ * @param {number} n
+ * @return {number}
+ */
+
+  //常规方法，超出时间限制 o(n)的复杂度
+  var myPow = function (x, n) {
+    if (n < 0) {
+      x = 1 / x;
+      n = -n;
+    }
+    var res = 1;
+    for (var i = 0; i < n; i++) {
+      res = res * x;
+    }
+    return res;
+  };
+
+  //快速幂:转换为二进制求解 复杂度o(log2n) 其中log2n代表n二进制最高位1的所在位数 log24 = 2
+  var myPow1 = function (x, n) {
+    if (n < 0) {
+      x = 1 / x;
+      n = -n;
+    }
+    var res = 1;
+    while (n) {
+      if (n & 1) {
+        res = res * x;
+      }
+      x = x * x;
+      n = Math.floor(n / 2) //等同于n>>>1 二进制向右移一位
+    }
+    return res;
+  };
+
+  //快速幂:二分法 复杂度o(log2n)
+  //     3^6      =      3^3     *      3^3 
+  // myPow2(3, 6) = myPow2(3, 3) * myPow2(3, 3)
+  // myPow2(3, 7) = myPow2(3, 3) * myPow2(3, 3) * myPow2(3, 1)
+
+  var myPow2 = function (x, n) {
+    if (n == -1) {
+      return 1 / x;
+    }
+    if (n == 0) {
+      return 1;
+    }
+    if (n == 1) {
+      return x;
+    }
+    if (n % 2) {
+      var half = myPow2(x, (n - 1) / 2);
+      return half * half * x;
+    } else {
+      var half = myPow2(x, n / 2);
+      return half * half;
+    }
+  };
+
+
+
+  console.log(myPow(2.00000, -28), myPow1(2.00000, 5), myPow2(2.00000, 5))
+</script>
+
+</html>

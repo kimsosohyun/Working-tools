@@ -26,6 +26,10 @@ export default new Router({
     {
       path:"/svg",
       component: Svg
+    },
+    {
+      path:"/home",
+      component: Home
     }
   ]
 })
