@@ -1,0 +1,93 @@
+.home {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 1440px;
+    .header {
+        position: relative;
+        flex: 0 0 $header-height;
+        box-shadow: 0px 1px 4px 0px rgba(0, 21, 41, 0.12);
+        z-index: 10;
+
+        .logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 116px;
+            height: 100%;
+            margin-left: 24px;
+            color: $main-active-color;
+            font-size: 23px;
+            line-height: 64px;
+        }
+
+        .user-info {
+            $item-width: 120px;
+            display: flex;
+            position: absolute;
+            top: 0;
+            right: 0;
+            .local-album {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: $item-width;
+                height: $header-height;
+                font-size: $font-size-m;
+                font-weight: 400;
+                color: $title-color;
+                &-text {
+                    cursor: pointer;
+                }
+            }
+            .user-actions {
+                display: flex;
+                position: relative;
+                justify-content: center;
+                align-items: center;
+                width: $item-width + 8px;
+                height: $header-height;
+                
+                // todo: dropdown component fixed
+                @at-root {
+                    .logout-panel {
+                        // left: auto !important;
+                        // right: 0;
+                        margin-top: 24px !important;
+                        margin-left: -20px;
+                        width: 116px;
+                        .v-dropdown__menu .v-dropdown__option.v-dropdown__option--active {  
+                            white-space: nowrap;
+                            color: $title-color;
+                        }
+                        .icon-exit {
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .main {
+        flex: 1;
+
+        display: flex;
+        .main-content {
+            flex: 1;
+
+            &.blow-secondary {
+                padding: 24px;
+                background-color: #f8f8f8;
+
+                .sub-page {
+                    height: 100%;
+                    border-radius: 2px;
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+}
+.camera-home {
+    min-width: 1798px;
+}

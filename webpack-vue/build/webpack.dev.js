@@ -8,7 +8,7 @@ const glob = require('glob');
 
 module.exports = merge(BaseConfig, {
     mode: "development",
-    //devtool: 'eval-source-map',//可配置4种打包调试方式
+    devtool: 'eval-source-map',//可配置4种打包调试方式
     devServer: {
         //设置基本目录结构
         contentBase: path.resolve(__dirname, "../dist"),

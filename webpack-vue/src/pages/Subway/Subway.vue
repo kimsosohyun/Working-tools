@@ -27,6 +27,16 @@ export default {
     Dialog
   },
   data() {
+    this.textLg = [
+      { x: 0, y: -6, ta: "center" },
+      { x: 6, y: -6, ta: "start" },
+      { x: 6, y: 6, ta: "start" },
+      { x: 6, y: 18, ta: "start" },
+      { x: 0, y: 18, ta: "center" },
+      { x: -6, y: 18, ta: "end" },
+      { x: -6, y: 6, ta: "end" },
+      { x: -6, y: -6, ta: "end" }
+    ];
     return {
       cw: 0,
       ch: 0,
@@ -38,7 +48,7 @@ export default {
       tooltipNode: {},
       dialogOption: {},
       clickNode: false,
-      chooseMiddleId: "" 
+      chooseMiddleId: ""
     };
   },
   created() {
@@ -46,330 +56,359 @@ export default {
       show: false,
       name: "",
       style: {
-        //  background:"red",
         left: "0px",
         top: "0px"
       },
-      info: {}
+      info: {},
+      transition: false //是否有过度特效
     };
   },
   mounted() {
-
-
     const vm = this;
-
     this.cw = document.getElementById("container").offsetWidth;
     this.ch = document.getElementById("container").offsetHeight;
+
+    this.registerNode();
+    this.registerEdge();
+    this.registerTipNode();
+    this.registerTipEdge();
+    this.createGraph();
 
     this.getMetroData("sh");
     this.getMetroInfo("sh");
 
-    const textLg = [
-      { x: 0, y: -6, ta: "center" },
-      { x: 6, y: -6, ta: "start" },
-      { x: 6, y: 6, ta: "start" },
-      { x: 6, y: 18, ta: "start" },
-      { x: 0, y: 18, ta: "center" },
-      { x: -6, y: 18, ta: "end" },
-      { x: -6, y: 6, ta: "end" },
-      { x: -6, y: -6, ta: "end" }
-    ];
+    // 创建 G6 图实例
 
-    G6.registerNode(
-      "breath-node",
-      {
-        draw(cfg, group) {
-          //用于画基本图形
-          const r = cfg.size / 2;
-          let node = null;
-          if (cfg.transfer) {
-            //可换乘
-            node = group.addShape("circle", {
-              zIndex: 4,
-              attrs: {
-                x: 0,
-                y: 0,
-                r: 1.4 * r,
-                fill: "pink",
-                cursor: "pointer",
-                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.8 : 0.5
-              },
-              name: ""
-            });
-          } else {
-            //普通节点
-            node = group.addShape("circle", {
-              zIndex: 4,
-              attrs: {
-                x: 0,
-                y: 0,
-                r,
-                // fill: "white",
-                stroke: "black",
-                cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
-                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
-              },
-              name: ""
-            });
-          }
-          const text = group.addShape("text", {
-            zIndex: -4,
-            attrs: {
-              text: cfg.name,
-              x: textLg[cfg.lg].x,
-              y: textLg[cfg.lg].y,
-              fill: cfg.transfer ? "black" : "#696969",
-              fontStyle: "10px",
-              opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 1 : 0.1,
-              textAlign: textLg[cfg.lg].ta,
-              cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default"
-            },
-            name: "text-shape"
-          });
+    this.graph.on("canvas:dragstart", () => {
+      this.dialogOption.transition = false;
+      this.dialogOption.show = false;
+    });
+    this.graph.on("wheelzoom", () => {
+      this.dialogOption.transition = false;
+      this.dialogOption.show = false;
+    });
 
-          return node;
-        },
-        afterDraw(cfg, group) {
-          //用于动效制作
+    window.onresize = function() {
+      vm.cw = document.getElementById("container").offsetWidth;
+      vm.ch = document.getElementById("container").offsetHeight;
 
-          const r = cfg.size / 2;
-          if (cfg.transfer) {
-            const width = 3 * r;
-            const height = 3 * r;
-            // 添加图片 shape
-            const image = group.addShape("image", {
-              attrs: {
-                x: -width / 2,
-                y: -height / 2,
-                width: width,
-                height: height,
-                img: img,
-                cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
-                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 1 : 0.1
-              },
-              // must be assigned in G6 3.3 and later versions. it can be any value you want
-              name: "image-shape"
-            });
+      vm.graph.changeSize(vm.cw, vm.ch);
+      // vm.graph.fitCenter();
+      // vm.graph.zoomTo(0.8, { x: vm.cw / 2, y: vm.ch / 2 });
+    };
+  },
+  methods: {
+    //注册节点， 节点的一些配置项
+    registerNode() {
+      const { textLg } = this,
+          vm = this;
 
-            // 该图片 shape 的动画
-            image.animate(
-              (ratio) => {
-                const toMatrix = G6.Util.transform([1, 0, 0, 0, 1, 0, 0, 0, 1], [["r", ratio * Math.PI * 2]]);
-                return {
-                  matrix: toMatrix
-                };
-              },
-              {
-                repeat: true, // 动画重复
-                duration: 3000,
-                easing: "easeCubic"
-              }
-            );
-          } else {
-            const back1 = group.addShape("circle", {
-              zIndex: -3,
-              attrs: {
-                x: 0,
-                y: 0,
-                r,
-                cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
-                fill: cfg.color || (cfg.style && cfg.style.fill),
-                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
-              },
-              name: "back1-shape"
-            });
-            const back2 = group.addShape("circle", {
-              zIndex: -2,
-              attrs: {
-                x: 0,
-                y: 0,
-                r,
-                cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
-                fill: cfg.color || (cfg.style && cfg.style.fill),
-                // 为了显示清晰，随意设置了颜色
-                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
-              },
-              name: "back2-shape"
-            });
-            const back3 = group.addShape("circle", {
-              zIndex: -1,
-              attrs: {
-                x: 0,
-                y: 0,
-                r,
-                cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
-                fill: cfg.color || (cfg.style && cfg.style.fill),
-                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
-              },
-              name: "back3-shape"
-            });
-            //group.sort(); // 排序，根据zIndex 排序
-            const delayBase = Math.random() * 2000;
-            back1.animate(
-              {
-                // 逐渐放大，并消失
-                r: r + 10,
-                opacity: 0.0
-              },
-              {
-                repeat: true, // 循环
-                duration: 3000,
-                easing: "easeCubic",
-                delay: delayBase // 无延迟
-              }
-            );
-            back2.animate(
-              {
-                // 逐渐放大，并消失
-                r: r + 10,
-                opacity: 0.0
-              },
-              {
-                repeat: true, // 循环
-                duration: 3000,
-                easing: "easeCubic",
-                delay: delayBase + 1000 // 1 秒延迟
-              }
-            );
-            back3.animate(
-              {
-                // 逐渐放大，并消失
-                r: r + 10,
-                opacity: 0.0
-              },
-              {
-                repeat: true, // 循环
-                duration: 3000,
-                easing: "easeCubic",
-                delay: delayBase + 2000 // 2 秒延迟
-              }
-            );
-          }
-        },
-        setState(name, value, item) {
-          //用于状态改变
-          const group = item.getContainer();
-          const shape = group.get("children")[0];
-
-          if (name === "selected") {
-            if (value) {
-              shape.attr("opacity", "1");
+      console.log(vm)
+      G6.registerNode(
+        "breath-node",
+        {
+          draw(cfg, group) {
+            //用于画基本图形
+            const r = cfg.size / 2;
+            let node = null;
+            if (cfg.transfer) {
+              //可换乘
+              node = group.addShape("circle", {
+                zIndex: 4,
+                attrs: {
+                  x: 0,
+                  y: 0,
+                  r: 1.4 * r,
+                  fill: "pink",
+                  cursor: "pointer",
+                  opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.8 : 0.5
+                },
+                name: ""
+              });
             } else {
-              shape.attr("opacity", "0");
+              //普通节点
+              node = group.addShape("circle", {
+                zIndex: 4,
+                attrs: {
+                  x: 0,
+                  y: 0,
+                  r,
+                  // fill: "white",
+                  stroke: "black",
+                  cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
+                  opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
+                },
+                name: ""
+              });
+            }
+            const text = group.addShape("text", {
+              zIndex: -4,
+              attrs: {
+                text: cfg.name,
+                x: textLg[cfg.lg].x,
+                y: textLg[cfg.lg].y,
+                fill: cfg.transfer ? "black" : "#696969",
+                fontStyle: "10px",
+                opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 1 : 0.1,
+                textAlign: textLg[cfg.lg].ta,
+                cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default"
+              },
+              name: "text-shape"
+            });
+
+            return node;
+          },
+          afterDraw(cfg, group) {
+            //用于动效制作
+
+            const r = cfg.size / 2;
+            if (cfg.transfer) {
+              const width = 3 * r;
+              const height = 3 * r;
+              // 添加图片 shape
+              const image = group.addShape("image", {
+                attrs: {
+                  x: -width / 2,
+                  y: -height / 2,
+                  width: width,
+                  height: height,
+                  img: img,
+                  cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
+                  opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 1 : 0.1
+                },
+                // must be assigned in G6 3.3 and later versions. it can be any value you want
+                name: "image-shape"
+              });
+
+              // 该图片 shape 的动画
+              image.animate(
+                (ratio) => {
+                  const toMatrix = G6.Util.transform([1, 0, 0, 0, 1, 0, 0, 0, 1], [["r", ratio * Math.PI * 2]]);
+                  return {
+                    matrix: toMatrix
+                  };
+                },
+                {
+                  repeat: true, // 动画重复
+                  duration: 3000,
+                  easing: "easeCubic"
+                }
+              );
+            } else {
+              const back1 = group.addShape("circle", {
+                zIndex: -3,
+                attrs: {
+                  x: 0,
+                  y: 0,
+                  r,
+                  cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
+                  fill: cfg.color || (cfg.style && cfg.style.fill),
+                  opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
+                },
+                name: "back1-shape"
+              });
+              const back2 = group.addShape("circle", {
+                zIndex: -2,
+                attrs: {
+                  x: 0,
+                  y: 0,
+                  r,
+                  cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
+                  fill: cfg.color || (cfg.style && cfg.style.fill),
+                  // 为了显示清晰，随意设置了颜色
+                  opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
+                },
+                name: "back2-shape"
+              });
+              const back3 = group.addShape("circle", {
+                zIndex: -1,
+                attrs: {
+                  x: 0,
+                  y: 0,
+                  r,
+                  cursor: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? "pointer" : "default",
+                  fill: cfg.color || (cfg.style && cfg.style.fill),
+                  opacity: cfg.under.indexOf(vm.chooseEdge) !== -1 || !vm.chooseEdge ? 0.6 : 0.1
+                },
+                name: "back3-shape"
+              });
+              //group.sort(); // 排序，根据zIndex 排序
+              const delayBase = Math.random() * 2000;
+              back1.animate(
+                {
+                  // 逐渐放大，并消失
+                  r: r + 10,
+                  opacity: 0.0
+                },
+                {
+                  repeat: true, // 循环
+                  duration: 3000,
+                  easing: "easeCubic",
+                  delay: delayBase // 无延迟
+                }
+              );
+              back2.animate(
+                {
+                  // 逐渐放大，并消失
+                  r: r + 10,
+                  opacity: 0.0
+                },
+                {
+                  repeat: true, // 循环
+                  duration: 3000,
+                  easing: "easeCubic",
+                  delay: delayBase + 1000 // 1 秒延迟
+                }
+              );
+              back3.animate(
+                {
+                  // 逐渐放大，并消失
+                  r: r + 10,
+                  opacity: 0.0
+                },
+                {
+                  repeat: true, // 循环
+                  duration: 3000,
+                  easing: "easeCubic",
+                  delay: delayBase + 2000 // 2 秒延迟
+                }
+              );
+            }
+          },
+          setState(name, value, item) {
+            //用于状态改变
+            const group = item.getContainer();
+            const shape = group.get("children")[0];
+
+            if (name === "selected") {
+              if (value) {
+                shape.attr("opacity", "1");
+              } else {
+                shape.attr("opacity", "0");
+              }
             }
           }
-        }
-      },
-      "circle"
-    );
-    G6.registerEdge(
-      "running-polyline",
-      {
-        draw(cfg, group) {
-          const edge = group.addShape("path", {
-            attrs: {
-              path: [
-                ["M", 100, 100],
-                ["L", 200, 200]
-              ],
-              stroke: cfg.color,
-              lineAppendWidth: cfg.style.lineAppendWidth,
-              opacity: cfg.id === vm.chooseEdge || !vm.chooseEdge ? 0.8 : 0.1
-            },
-            // must be assigned in G6 3.3 and later versions. it can be any value you want
-            name: "path-shape"
-          });
-
-          return edge;
         },
-        afterDraw(cfg, group) {
-          const shape = group.get("children")[0];
+        "circle"
+      );
+    },
 
-          const length = shape.getTotalLength();
-          let circleCount = Math.ceil(length / 120);
-          circleCount = circleCount === 0 ? 1 : circleCount;
-
-          const _loop = function _loop(i) {
-            const delay = Math.random() * 1000;
-            const start = shape.getPoint(i / circleCount);
-            const circle = group.addShape("circle", {
+    //注册边，边的一些配置项
+    registerEdge() {
+      const vm  = this;
+      G6.registerEdge(
+        "running-polyline",
+        {
+          draw(cfg, group) {
+            const edge = group.addShape("path", {
               attrs: {
-                x: start.x,
-                y: start.y,
-                r: 1,
-                fill: "black",
-                shadowColor: "#fff",
-                shadowBlur: 30,
-                opacity: cfg.id === vm.chooseEdge || !vm.chooseEdge ? 1 : 0.1
+                path: [
+                  ["M", 100, 100],
+                  ["L", 200, 200]
+                ],
+                stroke: cfg.color,
+                lineAppendWidth: cfg.style.lineAppendWidth,
+                opacity: cfg.id === vm.chooseEdge || !vm.chooseEdge ? 0.8 : 0.1
               },
-              name: "circle-shape"
+              // must be assigned in G6 3.3 and later versions. it can be any value you want
+              name: "path-shape"
             });
-            circle.animate(
-              (ratio) => {
-                // console.log("ratio", ratio)
-                ratio += i / circleCount;
-                if (ratio > 1) {
-                  ratio %= 1;
+
+            return edge;
+          },
+          afterDraw(cfg, group) {
+            const shape = group.get("children")[0];
+
+            const length = shape.getTotalLength();
+            let circleCount = Math.ceil(length / 120);
+            circleCount = circleCount === 0 ? 1 : circleCount;
+
+            const _loop = function _loop(i) {
+              const delay = Math.random() * 1000;
+              const start = shape.getPoint(i / circleCount);
+              const circle = group.addShape("circle", {
+                attrs: {
+                  x: start.x,
+                  y: start.y,
+                  r: 1,
+                  fill: "black",
+                  shadowColor: "#fff",
+                  shadowBlur: 30,
+                  opacity: cfg.id === vm.chooseEdge || !vm.chooseEdge ? 1 : 0.1
+                },
+                name: "circle-shape"
+              });
+              circle.animate(
+                (ratio) => {
+                  // console.log("ratio", ratio)
+                  ratio += i / circleCount;
+                  if (ratio > 1) {
+                    ratio %= 1;
+                  }
+                  const tmpPoint = shape.getPoint(ratio);
+                  return {
+                    x: tmpPoint.x,
+                    y: tmpPoint.y
+                  };
+                },
+                {
+                  repeat: true,
+                  duration: 10 * length,
+                  easing: "easeCubic",
+                  delay
                 }
-                const tmpPoint = shape.getPoint(ratio);
-                return {
-                  x: tmpPoint.x,
-                  y: tmpPoint.y
-                };
-              },
-              {
-                repeat: true,
-                duration: 10 * length,
-                easing: "easeCubic",
-                delay
-              }
-            );
-          };
+              );
+            };
 
-          for (let i = 0; i < circleCount; i++) {
-            _loop(i);
+            for (let i = 0; i < circleCount; i++) {
+              _loop(i);
+            }
           }
-        }
-      },
-      "polyline"
-    );
-    this.tooltipNode = new G6.Tooltip({
-      className: "dialog",
-      itemTypes: ["node"],
-      // offsetX: -316,
-      // offsetY: 16,
-      getContent: (ev) => {
-        const node = ev.item,
-          id = node.get("id"),
-          info = vm.createDialogInfo(id),
-          offset = {
-            padding: 16,
-            border: 39,
-            margin: 10,
-            one: 39,
-            two: 59
-          };
-        let num = 0;
+        },
+        "polyline"
+      );
+    },
 
-        const mouseoverDialog = document.getElementsByClassName("dialog")[0];
-        let height = offset.border + offset.padding;
+    //注册节点弹窗，因3.X版本不支持trigger: click,只支持mouseenter的触发方式，所以只用于计算位置
+    registerTipNode() {
+      const vm  = this;
+      this.tooltipNode = new G6.Tooltip({
+        className: "dialog",
+        itemTypes: ["node"],
+        // offsetX: -316,
+        // offsetY: 16,
+        getContent: (ev) => {
+          const node = ev.item,
+            id = node.get("id"),
+            info = vm.createDialogInfo(id),
+            offset = {
+              padding: 16,
+              border: 39,
+              margin: 10,
+              one: 39,
+              two: 59
+            };
+          let num = 0;
 
-        for (var attr in info) {
-          num++;
-          const item = info[attr];
-          if (item.length === 1) {
-            height += offset.one;
-          } else if (item.length === 2) {
-            height += offset.two;
+          const mouseoverDialog = document.getElementsByClassName("dialog")[0];
+          let height = offset.border + offset.padding;
+
+          for (var attr in info) {
+            num++;
+            const item = info[attr];
+            if (item.length === 1) {
+              height += offset.one;
+            } else if (item.length === 2) {
+              height += offset.two;
+            }
           }
-        }
 
-        height += (num - 1) * 10;
+          height += (num - 1) * 10;
 
-        mouseoverDialog.style.height = height + "px";
-        // return outDiv;
+          mouseoverDialog.style.height = height + "px";
+          // return outDiv;
 
-        return `
+          return `
           <div class="dialog-title">
             <h3>望京西</h3>
             <div class="close">
@@ -395,76 +434,71 @@ export default {
             </div>
           </div>
           `;
-      },
-      shouldBegin: (e) => {
-        return true;
-        //  return true;
-      }
-    });
+        },
+        shouldBegin: (e) => {
+          return true;
+          //  return true;
+        }
+      });
+    },
 
-    this.tooltipEdge = new G6.Tooltip({
-      className: "edgeTip",
-      itemTypes: ["edge"],
-      getContent: (e) => {
-        const id = e.item.get("id"),
-          edge = this.metroData.edges.find((item) => {
-            return item.id === id;
-          });
+    //注册边弹窗
+    registerTipEdge() {
+      this.tooltipEdge = new G6.Tooltip({
+        className: "edgeTip",
+        itemTypes: ["edge"],
+        getContent: (e) => {
+          const id = e.item.get("id"),
+            edge = this.metroData.edges.find((item) => {
+              return item.id === id;
+            });
 
-        if (id == this.chooseEdge || !this.chooseEdge) {
-          return `<div style="background:${edge.color}">
+          if (id == this.chooseEdge || !this.chooseEdge) {
+            return `<div style="background:${edge.color}">
               <span>${edge.name}</span>
             </div>`;
+          }
         }
-      }
-    });
+      });
+    },
 
     // 创建 G6 图实例
-    this.graph = new G6.Graph({
-      container: "container", // 指定图画布的容器 id，与第 9 行的容器对应
-      // 画布宽高
-      width: this.cw,
-      height: this.ch,
-      minZoom: 0.47,
-      maxZoom: 5.65,
-      modes: {
-        default: ["drag-canvas", "zoom-canvas"],
-        custom: []
-      },
+    createGraph() {
+      this.graph = new G6.Graph({
+        container: "container", // 指定图画布的容器 id，与第 9 行的容器对应
+        // 画布宽高
+        width: this.cw,
+        height: this.ch,
+        minZoom: 0.47,
+        maxZoom: 5.65,
+        modes: {
+          default: ["drag-canvas", "zoom-canvas"],
+          dialog: []
+        },
 
-      defaultNode: {
-        type: "breath-node",
-        size: 6,
-        style: {
-          lineWidth: 0,
-          fill: "#FFB6C1"
-        }
-      },
-      defaultEdge: {
-        type: "running-polyline",
-        size: 3,
-        color: "rgb(14,142,63)",
-        style: {
-          // opacity: 0.6,
-          lineAppendWidth: 3
-        }
-      },
-      plugins: [this.tooltipEdge, this.tooltipNode]
-    });
+        defaultNode: {
+          type: "breath-node",
+          size: 6,
+          style: {
+            lineWidth: 0,
+            fill: "#FFB6C1"
+          }
+        },
+        defaultEdge: {
+          type: "running-polyline",
+          size: 3,
+          color: "rgb(14,142,63)",
+          style: {
+            // opacity: 0.6,
+            lineAppendWidth: 3
+          }
+        },
+        plugins: [this.tooltipEdge, this.tooltipNode]
+      });
+    },
 
-     window.onresize=function(){
-      vm.cw = document.getElementById("container").offsetWidth;
-      vm.ch = document.getElementById("container").offsetHeight;
-
-      vm.graph.changeSize(vm.cw, vm.ch)
-      // vm.graph.fitCenter();
-      // vm.graph.zoomTo(0.8, { x: vm.cw / 2, y: vm.ch / 2 });
-    }
-  },
-  methods: {
     showBg(ev, item, color) {
       if (this.chooseEdge !== item.id) {
-
         ev.target.style.background = color ? color : item.color;
       }
     },
@@ -482,7 +516,6 @@ export default {
         this.focusNode(item);
       }
     },
-
     focusNode(item) {
       const positionArr = item.controlPoints,
         { graph } = this;
@@ -495,18 +528,14 @@ export default {
         node = positionArr[middle],
         idNode = this.metroData.nodes.find((item) => Math.abs(item.x - node.x) < 50 && Math.abs(item.y - node.y) < 50);
 
-     
-
       if (!idNode) {
         this.chooseMiddleId = item.source;
       } else {
         this.chooseMiddleId = idNode.id;
       }
-
       graph.render();
       graph.zoomTo(1);
       graph.focusItem(this.chooseMiddleId);
-     
     },
     getMetroInfo(city) {
       axios.get(`/goform/get${city}MetroInfo`).then((res) => this.handleInfoRes(res));
@@ -545,15 +574,15 @@ export default {
     },
     renderMetro() {
       const { graph } = this;
-      // 读取数据
 
+      // 读取数据
       graph.data(this.metroData);
       // 渲染图
       graph.render();
-
       graph.fitCenter();
       graph.zoomTo(0.8, { x: this.cw / 2, y: this.ch / 2 });
 
+      //节点点击
       graph.on("node:click", (ev) => {
         const node = ev.item,
           id = node.get("id"),
@@ -569,6 +598,7 @@ export default {
           dialogOption.style.left = mouseoverDialog.style.left;
           dialogOption.style.top = parseInt(mouseoverDialog.style.top) + 50 + "px";
           dialogOption.style.opacity = 1;
+          dialogOption.transition = true;
           dialogOption.show = true;
 
           this.clickNode = true;
@@ -577,7 +607,6 @@ export default {
         }
       });
     },
-
     createDialogInfo(id) {
       const info = this.metroInfo.find((item) => {
           return item.si === id;
@@ -657,7 +686,6 @@ export default {
 
       return newArr;
     },
-
     createNodes(arr) {
       let nodeArr = [],
         newArr = [];

@@ -15,6 +15,7 @@
   /**
   * @param {number} n
   * @return {number[]}
+  * 不考虑大数情况
   */
   var printNumbers = function (n) {
     var max = Math.pow(10, n),
@@ -25,8 +26,36 @@
     }
     return arr;
   };
+  /**
+  * @param {number} n
+  * @return {number[]}
+  * 考虑大数情况，采用字符串拼接的形式，dfs深度优先遍历
+  */
+  var printMaxNumbers = function (n) {
+    var temp = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+      arr = [],
+      res = [];
 
-  console.log(printNumbers(100))
+    var dfs = function (place) {
+      if (place == n) {
+        res.push(Number(arr.join(""))); 
+        //arr.join("") 将每一位拼接起来   ['0', '0', '1'] ->  "001"
+        //Number(arr.join("")) Number方法不仅能变字符串为数字,还能去除前面位的0
+        return;
+      }
+
+      for (var i = 0; i < temp.length; i++) {
+        arr[place] = i;
+        dfs(place + 1);
+      }
+    }
+    dfs(0);
+    return res.splice(1); //去掉第一个的0
+  };
+
+
+  console.log(printNumbers(2))
+  console.log(printMaxNumbers(2))
 
 </script>
 

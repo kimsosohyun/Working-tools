@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="https://leetcode-cn.com/problems/da-yin-cong-1dao-zui-da-de-nwei-shu-lcof/" target="_blank">由此去>>></a>
+</body>
+<script>
+  /**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+  /**
+   * @param {ListNode} head
+   * @param {number} val
+   * @return {ListNode}
+   */
+  var deleteNode = function (head, val) {
+    for (var i = head.length - 1; i >= 0; i--) {
+      if (head[i] === val) {
+        head.splice(i, 1)
+      }
+    }
+    return head;
+  }
+
+  console.log(deleteNode([4, 5, 1, 9], 5))
+
+</script>
+
+</html>

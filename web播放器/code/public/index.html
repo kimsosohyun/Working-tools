@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico?<%= htmlWebpackPlugin.options.customHash %>">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <script src="./lang/b28n.js?<%= htmlWebpackPlugin.options.customHash %>"></script>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+    <!-- <script>
+      if (self.crossOriginIsolated) {
+        // 跨域隔离成功
+        console.log("%c cross origin isolated ", "background: #333;color: #fff;border-radius: 2px");
+      }
+    </script> -->
+    <% const { jsFiles } = htmlWebpackPlugin.options %>
+    <% if (jsFiles && jsFiles.length > 0) { %>
+        <% for(let file of jsFiles) { %>
+          <script type="text/javascript" src="./player/<%= file %>.js"></script>
+        <% } %>
+    <% } %>
+  </body>
+</html>

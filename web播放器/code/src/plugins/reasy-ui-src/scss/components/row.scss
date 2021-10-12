@@ -1,0 +1,4 @@
+@import "./col.scss";
+.v-row {
+  @include clearfix;
+}

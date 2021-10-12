@@ -1,5 +1,5 @@
 <template>
-  <div class="dialogTransition" :class="{ dialogShow: showDialog }">
+  <div class="nodeDialog" :class="[{ dialogShow: showDialog }, { dialogTransition: transition }]">
     <div class="dialog" :style="dialogOption.style" v-click-outside="clickOutside">
       <div class="dialog-title">
         <h3>{{ dialogOption.name }}</h3>
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  name: "dialog",
+  name: "nodeDialog",
   props: {
     dialogOption: {
       type: Object
@@ -46,6 +46,9 @@ export default {
   computed: {
     showDialog() {
       return this.dialogOption.show;
+    },
+    transition() {
+      return this.dialogOption.transition;
     }
   },
   methods: {
@@ -66,6 +69,8 @@ export default {
 <style lang="scss">
 .dialogTransition {
   transition: 0.5s;
+}
+.nodeDialog {
   opacity: 0;
   visibility: hidden;
 }
