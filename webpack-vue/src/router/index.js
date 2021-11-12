@@ -5,6 +5,7 @@ const Home = () => import("../pages/Home/Home.vue");
 const Map = () => import("../pages/Map/Map.vue");
 const Subway = () => import("../pages/Subway/Subway.vue");
 const Svg = () => import("../pages/Svg/Svg.vue");
+const Show = () => import("@/components/show");
 
 Vue.use(Router)
 
@@ -30,6 +31,10 @@ export default new Router({
     {
       path:"/home",
       component: Home
+    },
+    {
+      path:"/show",
+      component: Show
     }
   ]
 })

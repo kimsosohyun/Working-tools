@@ -1,5 +1,10 @@
 <template class="map">
   <div class="bg">
+    <div class="choose-city">
+      <div class="station-info">
+        <w-switch v-model="showInfo" onText="站台信息" offText="站台信息"></w-switch>
+      </div>
+    </div>
     <ul class="metro-line" ref="metroLine">
       <li
         v-for="item in metroData.edges"
@@ -12,8 +17,6 @@
       </li>
     </ul>
     <div id="container"></div>
-
-    <Dialog ref="dialog" :dialogOption="dialogOption" :clickNode="clickNode" @setClickNode="setClickNode" />
   </div>
 </template>
 
@@ -21,11 +24,8 @@
 import G6 from "@antv/g6";
 import axios from "axios";
 import img from "../../assets/img/transfer.png";
-import Dialog from "./Dialog";
+
 export default {
-  components: {
-    Dialog
-  },
   data() {
     this.textLg = [
       { x: 0, y: -6, ta: "center" },
@@ -46,22 +46,23 @@ export default {
       graph: {},
       tooltipEdge: {},
       tooltipNode: {},
-      dialogOption: {},
-      clickNode: false,
-      chooseMiddleId: ""
+      // dialogOption: {},
+      //clickNode: false,
+      chooseMiddleId: "",
+      showInfo: true
     };
   },
   created() {
-    this.dialogOption = {
-      show: false,
-      name: "",
-      style: {
-        left: "0px",
-        top: "0px"
-      },
-      info: {},
-      transition: false //是否有过度特效
-    };
+    // this.dialogOption = {
+    //   show: false,
+    //   name: "",
+    //   style: {
+    //     left: "0px",
+    //     top: "0px"
+    //   },
+    //   info: {},
+    //   transition: false //是否有过度特效
+    // };
   },
   mounted() {
     const vm = this;
@@ -74,19 +75,19 @@ export default {
     this.registerTipEdge();
     this.createGraph();
 
-    this.getMetroData("sh");
-    this.getMetroInfo("sh");
+    this.getMetroData("sz");
+    this.getMetroInfo("sz");
 
     // 创建 G6 图实例
 
-    this.graph.on("canvas:dragstart", () => {
-      this.dialogOption.transition = false;
-      this.dialogOption.show = false;
-    });
-    this.graph.on("wheelzoom", () => {
-      this.dialogOption.transition = false;
-      this.dialogOption.show = false;
-    });
+    // this.graph.on("canvas:dragstart", () => {
+    //   this.dialogOption.transition = false;
+    //   this.dialogOption.show = false;
+    // });
+    // this.graph.on("wheelzoom", () => {
+    //   this.dialogOption.transition = false;
+    //   this.dialogOption.show = false;
+    // });
 
     window.onresize = function() {
       vm.cw = document.getElementById("container").offsetWidth;
@@ -98,12 +99,15 @@ export default {
     };
   },
   methods: {
+    beforeChange(value) {
+      console.log(value);
+      return true;
+    },
     //注册节点， 节点的一些配置项
     registerNode() {
       const { textLg } = this,
-          vm = this;
+        vm = this;
 
-      console.log(vm)
       G6.registerNode(
         "breath-node",
         {
@@ -295,7 +299,7 @@ export default {
 
     //注册边，边的一些配置项
     registerEdge() {
-      const vm  = this;
+      const vm = this;
       G6.registerEdge(
         "running-polyline",
         {
@@ -371,73 +375,73 @@ export default {
 
     //注册节点弹窗，因3.X版本不支持trigger: click,只支持mouseenter的触发方式，所以只用于计算位置
     registerTipNode() {
-      const vm  = this;
+      const vm = this;
+
       this.tooltipNode = new G6.Tooltip({
-        className: "dialog",
+        className: "tooltipNode",
         itemTypes: ["node"],
-        // offsetX: -316,
-        // offsetY: 16,
+        // trigger: "click",
+        // fixToNode: true/[1, 0.5],
+        offsetX: 8,
+        offsetY: -52,
         getContent: (ev) => {
           const node = ev.item,
             id = node.get("id"),
             info = vm.createDialogInfo(id),
-            offset = {
-              padding: 16,
-              border: 39,
-              margin: 10,
-              one: 39,
-              two: 59
-            };
-          let num = 0;
+            name = vm.metroData.nodes.find((el) => el.id === id).name;
 
-          const mouseoverDialog = document.getElementsByClassName("dialog")[0];
-          let height = offset.border + offset.padding;
+          // const mouseoverDialog = this.tooltipNode._cfgs.tooltip;
+          // console.log(mouseoverDialog, node)
 
-          for (var attr in info) {
-            num++;
-            const item = info[attr];
-            if (item.length === 1) {
-              height += offset.one;
-            } else if (item.length === 2) {
-              height += offset.two;
+          const outDiv = document.createElement("div");
+          let str = "";
+
+          str +=
+            '<div class="dialog-title">' +
+            "<h3>" +
+            name +
+            "</h3>" +
+            // '<div class="close">' +
+            // '<i class="iconfont icon-guanbi"></i>' +
+            // "</div>" +
+            "</div>";
+          str += '<div class="dialog-content">';
+
+          for (let key in info) {
+            const value = info[key];
+
+            str += '<div class="line">' + '<p class="line-title" style=' + value[0].color + ">" + key + "</p>" + "<ul>";
+            for (var i = 0; i < value.length; i++) {
+              str +=
+                "<li>" +
+                '<p class="line-left">' +
+                "<span>开往</span>" +
+                "<strong>" +
+                value[i].name +
+                "</strong>" +
+                "</p>" +
+                '<div class="line-right">' +
+                "<span>首 " +
+                value[i].ft +
+                "</span>" +
+                "<span>末 " +
+                value[i].lt +
+                "</span>" +
+                "</div>" +
+                "</li>";
             }
+            str += "</ul>" + "</div>";
           }
-
-          height += (num - 1) * 10;
-
-          mouseoverDialog.style.height = height + "px";
-          // return outDiv;
-
-          return `
-          <div class="dialog-title">
-            <h3>望京西</h3>
-            <div class="close">
-              <i class="iconfont icon-guanbi"></i>
-            </div>
-          </div>
-          
-          <div class="dialog-content">
-            <div class="line">
-              <p class="line-title">地铁1号线(科学城-韦家碾)</p>
-              <ul>
-                <li>
-                  <p class="line-left">
-                    <span>开往</span>
-                    <strong>科学城</strong>
-                  </p>
-                  <div class="line-right">
-                    <span>首 06:20</span>
-                    <span>末 23:22</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-          `;
+          str += "</div>";
+          outDiv.innerHTML = str;
+          return outDiv;
         },
-        shouldBegin: (e) => {
-          return true;
-          //  return true;
+        shouldBegin: (ev) => {
+          const node = ev.item,
+            id = node.get("id"),
+            item = this.metroData.nodes.find((el) => el.id === id);
+
+          return this.showInfo && (item.under.indexOf(this.chooseEdge) !== -1 || !this.chooseEdge);
         }
       });
     },
@@ -445,8 +449,10 @@ export default {
     //注册边弹窗
     registerTipEdge() {
       this.tooltipEdge = new G6.Tooltip({
-        className: "edgeTip",
+        className: "tooltipEdge",
         itemTypes: ["edge"],
+        offsetX: 8,
+        offsetY: -52,
         getContent: (e) => {
           const id = e.item.get("id"),
             edge = this.metroData.edges.find((item) => {
@@ -462,7 +468,7 @@ export default {
       });
     },
 
-    // 创建 G6 图实例
+    // 创建 G6 图实例, 生成this.graph
     createGraph() {
       this.graph = new G6.Graph({
         container: "container", // 指定图画布的容器 id，与第 9 行的容器对应
@@ -489,7 +495,6 @@ export default {
           size: 3,
           color: "rgb(14,142,63)",
           style: {
-            // opacity: 0.6,
             lineAppendWidth: 3
           }
         },
@@ -572,6 +577,7 @@ export default {
       console.log("metroData", this.metroData);
       this.renderMetro();
     },
+    //读取数据,生成地铁图
     renderMetro() {
       const { graph } = this;
 
@@ -583,29 +589,30 @@ export default {
       graph.zoomTo(0.8, { x: this.cw / 2, y: this.ch / 2 });
 
       //节点点击
-      graph.on("node:click", (ev) => {
-        const node = ev.item,
-          id = node.get("id"),
-          item = this.metroData.nodes.find((el) => el.id === id);
+      // graph.on("node:click", (ev) => {
+      //   return;
+      //   const node = ev.item,
+      //     id = node.get("id"),
+      //     item = this.metroData.nodes.find((el) => el.id === id);
 
-        if (item.under.indexOf(this.chooseEdge) !== -1 || !this.chooseEdge) {
-          const mouseoverDialog = document.getElementsByClassName("dialog")[0],
-            { dialogOption } = this.$refs.dialog;
+      //   if (item.under.indexOf(this.chooseEdge) !== -1 || !this.chooseEdge) {
+      //     const mouseoverDialog = this.tooltipNode._cfgs.tooltip,
+      //       { dialogOption } = this.$refs.dialog;
 
-          this.info = this.createDialogInfo(id);
-          dialogOption.name = this.metroData.nodes.find((el) => el.id === id).name;
-          dialogOption.info = this.createDialogInfo(id);
-          dialogOption.style.left = mouseoverDialog.style.left;
-          dialogOption.style.top = parseInt(mouseoverDialog.style.top) + 50 + "px";
-          dialogOption.style.opacity = 1;
-          dialogOption.transition = true;
-          dialogOption.show = true;
+      //     this.info = this.createDialogInfo(id);
+      //     dialogOption.name = this.metroData.nodes.find((el) => el.id === id).name;
+      //     dialogOption.info = this.createDialogInfo(id);
+      //     dialogOption.style.left = mouseoverDialog.style.left;
+      //     dialogOption.style.top = parseInt(mouseoverDialog.style.top) + 50 + "px";
+      //     dialogOption.style.opacity = 1;
+      //     dialogOption.transition = true;
+      //     dialogOption.show = true;
 
-          this.clickNode = true;
+      //     this.clickNode = true;
 
-          // this.graph.setMode("custom");
-        }
-      });
+      //     // this.graph.setMode("custom");
+      //   }
+      // });
     },
     createDialogInfo(id) {
       const info = this.metroInfo.find((item) => {
@@ -623,12 +630,13 @@ export default {
         if (!obj[key]) {
           obj[key] = [];
         }
-        item.ft != "--:--" && obj[key].push(item);
+        obj[key].push(item);
       });
 
-      // console.log(obj);
+      console.log(obj);
       return obj;
     },
+    //创建render图需要的边数据
     createEdges(arr, nodesArr) {
       let newArr = [];
 
@@ -670,7 +678,7 @@ export default {
         });
 
         if (!obj.source || !obj.target) {
-          //高德地图提供数据有些绘图点不与出发点或结束点的位置重合，需要采用此来修正
+          //高德地图提供数据有些绘图点不与出发点或结束点的位置重合，需要采用此来修正起点和终点
           nodesArr.forEach((item) => {
             if (Math.abs(item.x - fx) < 30 && Math.abs(item.y - fy) < 30) {
               obj.source = item.id;
@@ -686,6 +694,7 @@ export default {
 
       return newArr;
     },
+    //创建render图需要的节点数据
     createNodes(arr) {
       let nodeArr = [],
         newArr = [];
@@ -694,25 +703,25 @@ export default {
         nodeArr = nodeArr.concat(item.st);
       });
       nodeArr.forEach((item) => {
-        let obj = {},
-          posi = item.p.split(" "),
-          under = item.r.split("|");
+        if (!newArr.find(({ id }) => id === item.sid)) {
+          let obj = {},
+            posi = item.p.split(" "),
+            under = item.r.split("|");
 
-        obj.x = posi[0];
-        obj.y = posi[1];
-        obj.name = item.n;
-        obj.id = item.sid;
-        obj.lg = item.lg;
-        obj.under = under;
+          obj.x = posi[0];
+          obj.y = posi[1];
+          obj.name = item.n;
+          obj.id = item.sid;
+          obj.lg = item.lg;
+          obj.under = under;
 
-        // let transfer = item.r.split("|");
-        obj.transfer = item.t != 0 ? true : false;
-        newArr.push(obj);
+          // let transfer = item.r.split("|");
+          obj.transfer = item.t != 0 ? true : false;
+          newArr.push(obj);
+        }
       });
+
       return newArr;
-    },
-    setClickNode(val) {
-      this.clickNode = val;
     }
   }
 };
@@ -724,10 +733,13 @@ export default {
   width: 100vw;
   height: 100vh;
   background: #fffaf0;
-
+  .station-info {
+    margin-left: 6px;
+    line-height: 40px;
+  }
   .metro-line {
     position: absolute;
-    top: 0;
+    top: 40px;
     left: 0;
     width: 100vw;
     height: 30px;
@@ -751,15 +763,13 @@ export default {
   #container {
     position: absolute;
     overflow: hidden;
-    top: 50px;
+    top: 70px;
     left: 0;
     right: 0;
     bottom: 0;
-    // width: 100vw;
-    // height: 100vh;
   }
 }
-.edgeTip {
+.tooltipEdge {
   z-index: 9;
   position: absolute;
   top: 0;
@@ -771,24 +781,101 @@ export default {
   border: 2px solid #eee;
   font-size: 12px;
   border-radius: 6px;
+  div {
+    // width: 42px;
+    color: white;
+    height: 22px;
+    opacity: 0.8;
+    text-align: center;
+    line-height: 22px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 6px;
+  }
 }
-.edgeTip div {
-  // width: 42px;
-  color: white;
-  height: 22px;
-  opacity: 0.8;
-  text-align: center;
-  line-height: 22px;
-  padding-left: 6px;
-  padding-right: 6px;
-  border-radius: 6px;
-}
-#container .dialog {
-  // width: 300px;
-  // height: 160px;
-  // background-color: white;
-  // opacity: 0;
-  visibility: hidden !important;
-  // z-index: 5;
+
+.tooltipNode {
+  border-radius: 10px;
+  width: 300px;
+  background-color: #3cb371;
+  .dialog-title {
+    height: 30px;
+    line-height: 30px;
+    h3 {
+      margin-left: 10px;
+      font-size: 14px;
+      float: left;
+      color: white;
+    }
+    .close {
+      width: 30px;
+      height: 30px;
+      float: right;
+      text-align: center;
+      margin-right: 2px;
+      cursor: pointer;
+      i {
+        color: white;
+        line-height: 30px;
+        font-size: 18px;
+      }
+    }
+  }
+  .dialog-content {
+    width: 284px;
+    background-color: white;
+    // min-height: 150px;
+    margin-left: 8px;
+    margin-bottom: 8px;
+    padding: 8px;
+    .line {
+      font-size: 12px;
+      margin-bottom: 10px;
+      &:last-child {
+        margin-bottom: 0px;
+      }
+      .line-title {
+        font-size: 12px;
+        font-weight: bold;
+        padding-bottom: 6px;
+      }
+      ul {
+        .noDate {
+          color: rgb(192, 192, 192);
+        }
+        li {
+          line-height: 18px;
+          height: 18px;
+          margin-bottom: 4px;
+          &:last-child {
+            margin-bottom: 0px;
+          }
+          .line-left {
+            float: left;
+            strong {
+              margin-left: 2px;
+            }
+          }
+          .line-right {
+            float: right;
+            span {
+              display: inline-block;
+              width: 70px;
+              text-align: center;
+              height: 18px;
+              color: white;
+            }
+            span:nth-of-type(1) {
+              background-color: #ef5d42;
+            }
+            span:nth-of-type(2) {
+              margin-left: -4px;
+              background-color: #80b142;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>

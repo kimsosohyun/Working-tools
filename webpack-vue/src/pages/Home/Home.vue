@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import Card from "@/components/card";
-import Tabs from "@/components/tabs";
+import Card from "@/components/test/card";
+import Tabs from "@/components/test/tabs";
 
 export default {
   name: "Home",
