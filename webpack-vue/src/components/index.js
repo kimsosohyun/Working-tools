@@ -1,8 +1,9 @@
-import Switch from "./switch/w-switch";
-import Tabs from "./tabs/w-tabs";
+import Switch from "./switch";
+import {Tabs, TabPane} from "./tabs";
+import Select from "./select"
 
 
-const components = [Switch, Tabs];
+const components = [Switch, Tabs, TabPane, Select];
 
 const install = function(Vue) {
   // window.Vue = Vue;

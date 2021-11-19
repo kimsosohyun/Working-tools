@@ -9,7 +9,7 @@ import KimUi from "./components"
 //引用样式
 import "./css/normalize.scss";
 import "./css/test.css";
-// import "./css/icons.scss";
+import "./css/icons.scss";
 Vue.use(vClickOutside)
 Vue.config.productionTip = false
 

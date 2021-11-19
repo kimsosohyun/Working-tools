@@ -83,7 +83,10 @@ module.exports= {
                 // babel-loader是做一些兼容性处理，让高级语法在浏览器中都能正常运行，如es6转兼容性更好的es5
                 test: /\.(jsx|js)$/,
                 use: {
-                    loader: 'babel-loader'
+                    loader: 'babel-loader',
+                    options: {
+                        plugins: ["@babel/plugin-transform-runtime"]
+                    }
                 },
                 exclude: /node_modules/
             },
