@@ -44,11 +44,12 @@ export default {
     }
   },
   methods: {
-    changeValue() {
+    async changeValue() {
       if (this.disabled) return;
-      const value = this.value === this.onValue ? this.offValue : this.onValue;
+      const value = this.value === this.onValue ? this.offValue : this.onValue,
+        result = await this.beforeChange(value);
 
-      if (this.beforeChange(value) === false) return;
+      if (result === false) return;
       this.$emit("change", value);
     }
   }
