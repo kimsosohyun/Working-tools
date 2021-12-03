@@ -9,7 +9,7 @@
       <w-select v-model="select1" :options="selectOption" />
     </div>
 
-      <w-input v-model="input"></w-input>
+      <w-input v-model="input" :maxlength="5" type="password"></w-input>
   </div>
 </template>
 
