@@ -12,3 +12,18 @@ export function setCursorPos(ctrl, pos) {
     range.select();
   }
 }
+
+export function transformWidth(val) {
+  if (val === "" || val === undefined || val === null) {
+    return;
+  }
+  if (typeof val === "string") {
+    if (/^\d*$/.test(val)) {
+      //'70'变为'70px'
+      return `${val}px`;
+    }
+    return val; //'70%'
+  }
+
+  return `${val}px`; // 70变为'70px'
+}

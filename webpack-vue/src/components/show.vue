@@ -6,18 +6,25 @@
       <w-tab-pane label="标签3" value="3">标签3内容</w-tab-pane>
     </w-tabs> -->
     <div class="position">
-      <w-select v-model="select1" :options="selectOption" />
-    </div>
+      <!-- <w-select v-model="select1" :options="selectOption" />   -->
+      <w-select v-model="select1" :options="selectOption" width="160" is-clear :placeholder="2345345">
+        <template #default="slotProps">
+          <div>
+            <i class="icon-view"></i>
+            <span>{{ slotProps.label }}</span>
+          </div>
+        </template>
+      </w-select>
 
-      <w-input v-model="input" :maxlength="5" type="password"></w-input>
+      <v-select v-model="select1" :options="selectOption" width="160" is-clear :placeholder="2345345"></v-select>
+    </div>
   </div>
 </template>
-
-<script>
+s<script>
 export default {
   data() {
     return {
-      select1: "1",
+      select1: "",
       // selectOption: [
       //   {
       //     value: "1",
@@ -36,10 +43,8 @@ export default {
       //     label: "选项四",
       //   },
       // ],
-      selectOption: [
-        1,3,4,5,6,78,2
-      ],
-      input: 23423423
+      selectOption: [16788686786786867867867876, 3, 4, 5, 6, 78, 2],
+      input: 23423423,
     };
   },
   methods: {

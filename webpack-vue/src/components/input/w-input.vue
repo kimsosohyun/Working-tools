@@ -1,5 +1,5 @@
 <template>
-  <div class="input" :style="{ width: inputWidth }">
+  <div :class="['input', { 'input--disabled': disabled }]" :style="{ width: inputWidth }">
     <div class="input-prefix" v-if="icon">
       <i :class="icon"></i>
     </div>
@@ -7,16 +7,19 @@
       ref="input"
       :placeholder="placeholder"
       :type="inputType"
-      class="input-text"
+      :class="['input-text', { 'has-icon': icon }]"
       :value="value"
       :name="name"
       :maxlength="maxlength"
       :minlength="minlength"
       :readonly="readonly"
+      :disabled="disabled"
       @input="inputValue"
+      @focus="inputFocus"
+      @blur="inputBlur"
+      @change="inputChange"
     />
-
-    <div class="input-suffix">
+    <div class="input-suffix" ref="suffix">
       <div class="input-suffix_icon">
         <i v-if="isClear" class="icon-error" @click="clearValue"></i>
         <i v-if="showPassword" class="icon-error" @click="showValue"></i>
@@ -30,17 +33,13 @@
 </template>
 
 <script>
-import { setCursorPos } from "../lib";
+import { setCursorPos, transformWidth } from "../lib";
 export default {
   name: "w-input",
   props: {
     value: {
       type: [String, Number],
       default: ""
-    },
-    type: {
-      type: String,
-      default: "text"
     },
     name: String,
     maxlength: Number,
@@ -51,11 +50,6 @@ export default {
     },
     width: [String, Number],
     placeholder: String,
-    //是否是搜索
-    isSearch: {
-      type: Boolean,
-      default: false
-    },
     isClear: {
       type: Boolean,
       default: false
@@ -79,22 +73,10 @@ export default {
       type: Boolean,
       default: false
     },
-    autoCorrection: {
-      type: Array,
-      default: () => []
-    },
-    size: {
-      type: String,
-      default: "M"
-    },
     //输入框前面图标
     icon: String,
     //输入框后缀图标
     suffixIcon: String,
-    rows: {
-      type: Number,
-      default: 2
-    },
     //输入框允许输入字符正则
     allow: RegExp,
     valid: [Array, Object],
@@ -108,6 +90,12 @@ export default {
     value: {
       handler(val) {
         this.valueLen = val.length;
+
+        if (this.unit && val && !this.isFocus) {
+          //加在这里而不是mounted的原因:
+          //外部改变v-model绑定值时也需要立刻为新值加上单位
+          this.setInputValue(val + " " + this.unit);
+        }
       },
       immediate: true
     }
@@ -115,13 +103,38 @@ export default {
   data() {
     return {
       passwordVisible: false,
-      valueLen: 0
+      valueLen: 0,
+      isFocus: false,
+      isZh: false
     };
   },
   mounted() {
+    const { input, suffix } = this.$refs;
+    input.style.paddingRight = suffix.offsetWidth + "px";
+
     if (this.autofocus) {
-      this.$refs.input.focus();
+      input.focus();
     }
+    //当用户使用拼音输入法开始输入汉字时，这个事件就会被触发
+    input.addEventListener(
+      "compositionstart",
+      () => {
+        console.log("compositionstart");
+        this.isZh = true;
+      },
+      false
+    );
+    input.addEventListener(
+      "compositionend",
+      (event) => {
+        console.log("compositionend");
+        this.isZh = false;
+        //文本段落的组成完成或取消时，compositionend事件将被触发
+        //compositionend在input事件之后才触发，需要手动去调input事件
+        this.inputValue(event);
+      },
+      false
+    );
   },
   computed: {
     inputType() {
@@ -136,21 +149,7 @@ export default {
       }
     },
     inputWidth() {
-      const val = this.width;
-
-      console.log(typeof val);
-      if (val === "" || val === undefined || val === null) {
-        return;
-      }
-      if (typeof val === "string") {
-        if (/^\d*$/.test(val)) {
-          //'70'变为'70px'
-          return `${val}px`;
-        }
-        return val; //'70%'
-      }
-
-      return `${val}px`; // 70变为'70px'
+      return transformWidth(this.width);
     },
     word() {
       return this.value.length + "/" + this.maxlength;
@@ -158,13 +157,15 @@ export default {
   },
   methods: {
     inputValue(event) {
+      console.log("input");
+      //虚假输入不调用input回调，当compositionend输入内容确定之后再调用
+      if (this.isZh) return;
+      this.$emit("input", event.target.value);
       const inputVal = event.target.value;
       let val;
       if (this.allow) {
         const curOld = event.target.selectionStart,
           inputOldLength = inputVal.length;
-
-          console.log(curOld)
 
         val = (inputVal.match(this.allow) || []).join("");
         event.target.value = val;
@@ -179,6 +180,7 @@ export default {
       this.$emit("input", val);
     },
     clearValue() {
+      this.$emit("clear");
       this.$emit("input", "");
     },
     showValue() {
@@ -186,6 +188,36 @@ export default {
       this.$nextTick(() => {
         this.$refs.input.focus();
       });
+    },
+    setInputValue(val) {
+      this.$nextTick(() => {
+        this.$refs.input.value = val;
+      });
+    },
+    inputFocus(event) {
+      this.$emit("focus", event);
+      this.isFocus = true;
+      if (this.value && this.unit) {
+        //去掉单位
+        this.setInputValue(this.value);
+      }
+    },
+    inputBlur(event) {
+      this.$emit("blur", event);
+      this.isFocus = false;
+      if (this.value && this.unit) {
+        //加上单位
+        this.setInputValue(this.value + " " + this.unit);
+      }
+    },
+    inputChange(event) {
+      this.$emit("change", event.target.value);
+    },
+    focus() {
+      this.$refs.input.focus();
+    },
+    select() {
+      this.$refs.input.select();
     }
   }
 };
@@ -202,11 +234,24 @@ export default {
       border-color: $main-active-color;
     }
   }
+  &--disabled {
+    cursor: not-allowed;
+    &:hover {
+      .input-text {
+        border-color: #e9e9e9;
+      }
+    }
+    .input-text {
+      color: silver;
+      background-color: #f5f5f5;
+      border-color: #e9e9e9;
+    }
+  }
   &-text {
     height: 32px;
     outline: none;
     padding: 0 8px;
-    padding-left: 32px;
+    //padding-left: 32px;
     border: 1px solid #d8d8d8;
     border-radius: 2px;
     color: #262626;
@@ -238,6 +283,7 @@ export default {
     padding: 0 8px;
     &_icon {
       display: inline-block;
+      vertical-align: middle;
       i {
         color: #d8d8d8;
         display: inline-block;
@@ -257,9 +303,14 @@ export default {
       }
     }
     &_word {
+      vertical-align: middle;
       color: #d8d8d8;
+      line-height: 32px;
       display: inline-block;
     }
+  }
+  .has-icon {
+    padding-left: 32px;
   }
 }
 </style>

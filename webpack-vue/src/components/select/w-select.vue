@@ -5,9 +5,16 @@
       @click="showSelectList"
       ref="selectInput"
       :class="{ 'select-input--active': showList }"
+      @mouseenter="hover = true"
+      @mouseleave="hover = false"
+      :style="{ width: selectWidth }"
     >
-      <span class="select-input_value">{{ activeLabel }}</span>
-      <i class="icon-vertical-view select-input_icon"></i>
+      <span v-if="activeLabel" class="select-input_value">{{ activeLabel }}</span>
+      <span v-else class="select-input_placeholder">{{ placeholder}}</span>
+      <div class="select-input_icon">
+        <i v-if="hover && isClear && activeLabel" class="icon-error" @click.stop="clearSelect"></i>
+        <i v-else class="icon-vertical-view select-input_icon--animation"></i>
+      </div>
     </div>
 
     <transition name="el-zoom-in-top">
@@ -27,7 +34,14 @@
             :key="index"
             @click="() => changeValue(item)"
           >
-            {{ item.label }}
+            <slot
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            >
+              <!-- 后备内容 -->
+              {{ item.label }}
+            </slot>
           </li>
         </ul>
       </div>
@@ -36,6 +50,7 @@
 </template>
 
 <script>
+import { transformWidth } from "../lib";
 export default {
   name: "w-select",
   props: {
@@ -134,13 +149,24 @@ export default {
       });
       return list;
     },
+    selectWidth() {
+      return transformWidth(this.width);
+    },
     activeLabel() {
-      return this.optionList.find(({ value }) => value == this.value).label;
+      const activeOption = this.optionList.find(
+        ({ value }) => value == this.value
+      );
+      if (activeOption) {
+        return activeOption.label;
+      } else {
+        return this.value;
+      }
     },
   },
   data() {
     return {
       showList: false,
+      hover: false,
     };
   },
   methods: {
@@ -169,6 +195,9 @@ export default {
       this.$emit("input", value);
       this.showList = false;
     },
+    clearSelect() {
+      this.$emit("input", "");
+    },
   },
 };
 </script>
@@ -176,41 +205,54 @@ export default {
 <style lang="scss">
 .select {
   position: relative;
+  width: 228px;
   &-input {
+    width: 100%;
+    height: 32px;
     position: relative;
     display: inline-block;
     vertical-align: top;
-    width: 228px;
     font-size: 14px;
     cursor: pointer;
     border: 1px solid #d8d8d8;
+    border-radius: 2px;
     padding: 0 8px;
+    line-height: 32px;
     &:hover {
       border: 1px solid $main-active-color;
     }
     &_value {
-      color: #262626;
-      line-height: 32px;
+      display: inline-block;
       width: 100%;
-      border-radius: 2px;
+      color: #262626;
+      overflow: hidden;
+    }
+    &_placeholder {
+      color: #ccc; 
     }
     &_icon {
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      font-size: 16px;
-      padding: 0 8px;
-      line-height: 32px;
-      z-index: 3;
-      cursor: pointer;
-      color: #8d8d8d;
-      transition: all 0.2s;
+      i {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        font-size: 16px;
+        padding: 0 8px;
+        line-height: 32px;
+        z-index: 3;
+        cursor: pointer;
+        color: #8d8d8d;
+      }
+
+      &--animation {
+        transition: all 0.2s;
+      }
+      //transition: all 0.2s;
     }
   }
   &-input--active {
     border: 1px solid $main-active-color;
-    .select-input_icon {
+    .select-input_icon--animation {
       transform: rotate(180deg);
     }
   }
