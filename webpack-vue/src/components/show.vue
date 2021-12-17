@@ -4,10 +4,10 @@
       <w-tab-pane label="标签1" value="1">标签1内容</w-tab-pane>
       <w-tab-pane label="标签2" value="2" disabled>标签2内容</w-tab-pane>
       <w-tab-pane label="标签3" value="3">标签3内容</w-tab-pane>
-    </w-tabs> -->
+  </w-tabs> -->
     <div class="position">
       <!-- <w-select v-model="select1" :options="selectOption" />   -->
-      <w-select v-model="select1" :options="selectOption" width="160" is-clear :placeholder="2345345">
+      <w-select v-model="select1" :options="selectOption" width="160" is-manual :is-clear="''">
         <template #default="slotProps">
           <div>
             <i class="icon-view"></i>
@@ -16,7 +16,10 @@
         </template>
       </w-select>
 
-      <v-select v-model="select1" :options="selectOption" width="160" is-clear :placeholder="2345345"></v-select>
+      <v-select v-model="select1" :options="selectOption" width="160" is-manual :is-clear="''"></v-select>
+
+
+      <em>{{select1}}</em>
     </div>
   </div>
 </template>
@@ -61,6 +64,6 @@ export default {
 <style>
 .position {
   position: relative;
-  margin: 100px 200px;
+  padding: 500px 200px
 }
 </style>

@@ -4,6 +4,9 @@
     <w-input ref="input1" disabled v-model="input1" :width="180"  suffixIcon="icon-view" icon="icon-view" :allow="/\d/g" unit="KB/s"  show-word-limit :maxlength="100"></w-input>
     {{input1}}
     <button @click="click">click</button>
+
+
+    
   </div>
 </template>
 

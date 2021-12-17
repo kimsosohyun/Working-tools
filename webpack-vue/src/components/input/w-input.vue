@@ -23,7 +23,7 @@
       <div class="input-suffix_icon">
         <i v-if="isClear" class="icon-error" @click="clearValue"></i>
         <i v-if="showPassword" class="icon-error" @click="showValue"></i>
-        <i class="icon-suffix" v-if="suffixIcon" :class="suffixIcon"></i>
+        <i class="icon-suffix" v-if="suffixIcon" :class="suffixIcon" @click="suffixClick"></i>
       </div>
       <div class="input-suffix_word" v-if="showWordLimit && maxlength">
         <span>{{ this.value.length + "/" + this.maxlength }}</span>
@@ -218,6 +218,9 @@ export default {
     },
     select() {
       this.$refs.input.select();
+    },
+    suffixClick() {
+      this.$emit("suffixClick");
     }
   }
 };
