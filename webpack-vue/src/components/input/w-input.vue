@@ -21,7 +21,7 @@
     />
     <div class="input-suffix" ref="suffix">
       <div class="input-suffix_icon">
-        <i v-if="isClear" class="icon-error" @click="clearValue"></i>
+        <i v-if="isClear && value" class="icon-error" @click="clearValue"></i>
         <i v-if="showPassword" class="icon-error" @click="showValue"></i>
         <i class="icon-suffix" v-if="suffixIcon" :class="suffixIcon" @click="suffixClick"></i>
       </div>
@@ -160,7 +160,6 @@ export default {
       console.log("input");
       //虚假输入不调用input回调，当compositionend输入内容确定之后再调用
       if (this.isZh) return;
-      this.$emit("input", event.target.value);
       const inputVal = event.target.value;
       let val;
       if (this.allow) {
@@ -180,6 +179,9 @@ export default {
       this.$emit("input", val);
     },
     clearValue() {
+      if (this.disabled) {
+        return;
+      }
       this.$emit("clear");
       this.$emit("input", "");
     },
@@ -245,9 +247,20 @@ export default {
       }
     }
     .input-text {
+      cursor: not-allowed;
       color: silver;
       background-color: #f5f5f5;
       border-color: #e9e9e9;
+    }
+    .input-suffix {
+      .input-suffix_icon {
+        i {
+          cursor: not-allowed;
+        }
+        i:hover {
+          color: #d8d8d8;
+        }
+      }
     }
   }
   &-text {

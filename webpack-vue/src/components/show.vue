@@ -7,7 +7,7 @@
   </w-tabs> -->
     <div class="position">
       <!-- <w-select v-model="select1" :options="selectOption" />   -->
-      <w-select v-model="select1" :options="selectOption" width="160" is-manual :is-clear="''">
+      <w-select v-model="select1" :options="selectOption" width="160" is-clear unit="kb/s" @visible-change="change">
         <template #default="slotProps">
           <div>
             <i class="icon-view"></i>
@@ -16,7 +16,7 @@
         </template>
       </w-select>
 
-      <v-select v-model="select1" :options="selectOption" width="160" is-manual :is-clear="''"></v-select>
+      <v-select v-model="select1" :options="selectOption" width="160" is-manual :is-clear="''" unit="kb/s" suffixIcon="icon-view"  @input="change" ></v-select>
 
 
       <em>{{select1}}</em>
@@ -28,25 +28,26 @@ export default {
   data() {
     return {
       select1: "",
-      // selectOption: [
-      //   {
-      //     value: "1",
-      //     label: "选项一",
-      //   },
-      //   {
-      //     value: "2",
-      //     label: "选项二",
-      //   },
-      //   {
-      //     value: "3",
-      //     label: "选项三",
-      //   },
-      //   {
-      //     value: "4",
-      //     label: "选项四",
-      //   },
-      // ],
-      selectOption: [16788686786786867867867876, 3, 4, 5, 6, 78, 2],
+      selectOption: [
+        {
+          value: "1",
+          label: "选项一",
+        },
+        {
+          value: "2",
+          label: "选项二",
+          disabled: true
+        },
+        {
+          value: "3",
+          label: "选项三",
+        },
+        {
+          value: "4",
+          label: "选项四",
+        },
+      ],
+      // selectOption: [16788686786786867867867876, 3, 4, 5, 6, 78, 2],
       input: 23423423,
     };
   },
@@ -57,6 +58,9 @@ export default {
     tabClick(node) {
       console.log(node);
     },
+    change(val) {
+      console.log(val, "val")
+    }
   },
 };
 </script>
