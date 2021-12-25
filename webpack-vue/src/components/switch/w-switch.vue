@@ -58,10 +58,10 @@ export default {
 
 <style lang="scss">
 .w-switch {
+  vertical-align: middle;
   cursor: pointer;
   display: inline-block;
   font-size: 0;
-  vertical-align: top;
   .w-switch_item {
     display: inline-block;
     line-height: 24px;

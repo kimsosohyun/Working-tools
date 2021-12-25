@@ -1,37 +1,57 @@
 <template>
-  <div>
-    <!-- <w-tabs v-model="acitve" :beforeLeave="beforeLeave" @tab-click="tabClick" :animate="true">
-      <w-tab-pane label="标签1" value="1">标签1内容</w-tab-pane>
-      <w-tab-pane label="标签2" value="2" disabled>标签2内容</w-tab-pane>
-      <w-tab-pane label="标签3" value="3">标签3内容</w-tab-pane>
-  </w-tabs> -->
-    <div class="position">
-      <!-- <w-select v-model="select1" :options="selectOption" />   -->
-      <w-select v-model="select1" :options="selectOption" width="160" is-clear unit="kb/s" @visible-change="change">
-        <template #default="slotProps">
-          <div>
-            <i class="icon-view"></i>
-            <span>{{ slotProps.label }}</span>
-          </div>
-        </template>
-      </w-select>
-
-      <v-select v-model="select1" :options="selectOption" width="160" is-manual :is-clear="''" unit="kb/s" suffixIcon="icon-view"  @input="change" ></v-select>
-
-
-      <em>{{select1}}</em>
-    </div>
+  <div class="position">
+    <w-dialog
+      v-model="showDialog1"
+      title="哈哈哈"
+      :show-title="true"
+      :modal="true"
+      :close-on-click-modal="true"
+      :show-close="false"
+      :align-center="true"
+      @after-close="close"
+    >
+      <!-- <template v-slot:title>
+        <p>Here's some contact info111</p>
+      </template> -->
+      <div>
+        <w-select v-model="select1" :options="selectOption" width="160" is-clear unit="kb/s"></w-select>
+        <w-input></w-input>
+        <w-switch></w-switch>
+      </div>
+    </w-dialog>
+    <v-dialog
+      v-model="showDialog2"
+      title="哈哈哈"
+      :show-title="true"
+      :close-on-click-modal="true"
+      :show-close="false"
+      :align-center="true"
+    >
+      <!-- <template v-slot:title>
+        <p>Here's some contact info</p>
+      </template> -->
+      <div>
+        <v-select v-model="select1" :options="selectOption" width="160" is-clear unit="kb/s"></v-select>
+        <v-input></v-input>
+        <v-switch></v-switch>
+      </div>
+    </v-dialog>
+    <button @click="showDialog1 = true">click1</button>
+    <button @click="showDialog2 = true">click2</button>
   </div>
 </template>
-s<script>
+
+<script>
 export default {
   data() {
     return {
-      select1: "",
+      showDialog1: false,
+      showDialog2: false,
+      select1: "1",
       selectOption: [
         {
           value: "1",
-          label: "选项一",
+          label: "选项一"
         },
         {
           value: "2",
@@ -40,34 +60,25 @@ export default {
         },
         {
           value: "3",
-          label: "选项三",
+          label: "选项三"
         },
         {
           value: "4",
-          label: "选项四",
-        },
-      ],
-      // selectOption: [16788686786786867867867876, 3, 4, 5, 6, 78, 2],
-      input: 23423423,
+          label: "选项四"
+        }
+      ]
     };
   },
   methods: {
-    beforeLeave(activeValue, oldActiveValue) {
-      console.log(activeValue, oldActiveValue);
-    },
-    tabClick(node) {
-      console.log(node);
-    },
-    change(val) {
-      console.log(val, "val")
+    close() {
+      alert(1)
     }
-  },
+  }
 };
 </script>
 
 <style>
 .position {
-  position: relative;
-  padding: 500px 200px
+  height: 3000px;
 }
 </style>

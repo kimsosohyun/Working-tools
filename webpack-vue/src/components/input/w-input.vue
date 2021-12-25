@@ -234,6 +234,7 @@ export default {
   display: inline-block;
   width: 228px;
   font-size: 14px;
+  vertical-align: middle;
   &:hover {
     .input-text {
       border-color: $main-active-color;

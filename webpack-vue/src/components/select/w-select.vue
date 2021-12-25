@@ -137,7 +137,7 @@ export default {
     allow: RegExp,
     displayOptionsNumber: {
       type: Number,
-      default: 3
+      default: 5
     },
     unit: {
       type: String,
@@ -189,6 +189,11 @@ export default {
   },
   mounted() {
     window.addEventListener("scroll", () => {
+      if (this.showList) {
+        this.setPosition();
+      }
+    });
+    window.addEventListener("resize", () => {
       if (this.showList) {
         this.setPosition();
       }
@@ -318,7 +323,8 @@ export default {
 <style lang="scss">
 .select {
   position: relative;
-  width: 228px;
+  vertical-align: middle;
+  display: inline-block;
   &-input {
     width: 100%;
     height: 32px;

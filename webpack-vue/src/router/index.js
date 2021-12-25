@@ -6,7 +6,9 @@ const Map = () => import("../pages/Map/Map.vue");
 const Subway = () => import("../pages/Subway/Subway.vue");
 const Svg = () => import("../pages/Svg/Svg.vue");
 const Show = () => import("@/components/show");
-const Test = () => import("../pages/Test/Test.vue");
+const Input = () => import("../pages/Input/Input.vue");
+const Select = () => import("../pages/Select/Select.vue");
+const Dialog = () => import("../pages/Dialog/Dialog.vue");
 
 Vue.use(Router)
 
@@ -38,8 +40,16 @@ export default new Router({
       component: Show
     },
     {
-      path:"/test",
-      component: Test
+      path:"/input",
+      component: Input
+    },
+    {
+      path:"/select",
+      component: Select
+    },
+    {
+      path:"/Dialog",
+      component: Dialog
     }
   ]
 })
