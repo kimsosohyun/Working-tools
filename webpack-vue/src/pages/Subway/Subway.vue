@@ -1,10 +1,18 @@
 <template class="map">
   <div class="bg">
+    <div></div>
+    <div class="station-info">
+      <w-switch v-model="showInfo" onText="站台信息" offText="站台信息"></w-switch>
+    </div>
     <div class="choose-city">
-      <div class="station-info">
-        <w-switch v-model="showInfo" onText="站台信息" offText="站台信息"></w-switch>
+      <div class="choose-city--center">
+        <w-tabs v-model="city" @tab-click="chooseCity">
+          <w-tab-pane v-for="(city, index) in CITY" :key="index" :label="city.label" :value="city.value"></w-tab-pane>
+        </w-tabs>
+        <w-select @change="chooseCity" :options="cityOption" width="65" v-model="otherCity" placeholder="更多"> </w-select>
       </div>
     </div>
+
     <ul class="metro-line" ref="metroLine">
       <li
         v-for="item in metroData.edges"
@@ -27,6 +35,36 @@ import img from "../../assets/img/transfer.png";
 
 export default {
   data() {
+    this.CITY = [
+      {
+        label: "深圳",
+        value: "sz"
+      },
+      {
+        label: "成都",
+        value: "cd"
+      },
+      {
+        label: "北京",
+        value: "bj"
+      },
+      {
+        label: "上海",
+        value: "sh"
+      },
+      {
+        label: "广州",
+        value: "gz"
+      },
+      {
+        label: "武汉",
+        value: "wh"
+      },
+      {
+        label: "香港",
+        value: "xg"
+      }
+    ];
     this.textLg = [
       { x: 0, y: -6, ta: "center" },
       { x: 6, y: -6, ta: "start" },
@@ -49,8 +87,36 @@ export default {
       // dialogOption: {},
       //clickNode: false,
       chooseMiddleId: "",
-      showInfo: true
+      showInfo: true,
+      city: "sz",
+      otherCity: "",
+      cityOption: [
+        {
+          label: "南京",
+          value: "nj"
+        },
+        {
+          label: "重庆",
+          value: "cq"
+        },
+        {
+          label: "西安",
+          value: "xa"
+        }
+      ]
     };
+  },
+  watch: {
+    city(val) {
+      if (val) {
+        this.otherCity = "";
+      }
+    },
+    otherCity(val) {
+      if (val) {
+        this.city = "";
+      }
+    }
   },
   created() {
     // this.dialogOption = {
@@ -75,10 +141,9 @@ export default {
     this.registerTipEdge();
     this.createGraph();
 
-    this.getMetroData("sz");
-    this.getMetroInfo("sz");
-
-    // 创建 G6 图实例
+    // this.getMetroData("sz");
+    // this.getMetroInfo("sz");
+    this.chooseCity(this.city);
 
     // this.graph.on("canvas:dragstart", () => {
     //   this.dialogOption.transition = false;
@@ -99,9 +164,14 @@ export default {
     };
   },
   methods: {
-    beforeChange(value) {
-      console.log(value);
-      return true;
+    chooseCity(val) {
+      if(typeof val !== "string") {
+        val = val.value;
+      }
+      this.getMetroData(val);
+      this.getMetroInfo(val);
+
+    this.chooseEdge = ""; 
     },
     //注册节点， 节点的一些配置项
     registerNode() {
@@ -543,7 +613,8 @@ export default {
       graph.focusItem(this.chooseMiddleId);
     },
     getMetroInfo(city) {
-      axios.get(`/goform/get${city}MetroInfo`).then((res) => this.handleInfoRes(res));
+      //axios.get(`${MOCK_HTTP}/goform/get${city}MetroInfo`).then((res) => this.handleInfoRes(res)); //获取yapi地址
+      axios.get(`/goform/get${city}MetroInfo`).then((res) => this.handleInfoRes(res)); //获取本地地址
     },
     handleInfoRes(res) {
       if (res.status != 200) {
@@ -558,7 +629,7 @@ export default {
       console.log("metroInfo", this.metroInfo[0]);
     },
     getMetroData(city) {
-      axios.get(`/goform/get${city}Metro`).then((res) => this.handleDataRes(res));
+      axios.get(`${MOCK_HTTP}/goform/get${city}Metro`).then((res) => this.handleDataRes(res));
     },
     handleDataRes(res) {
       if (res.status != 200) {
@@ -680,10 +751,10 @@ export default {
         if (!obj.source || !obj.target) {
           //高德地图提供数据有些绘图点不与出发点或结束点的位置重合，需要采用此来修正起点和终点
           nodesArr.forEach((item) => {
-            if (Math.abs(item.x - fx) < 30 && Math.abs(item.y - fy) < 30) {
+            if (Math.abs(item.x - fx) < 10 && Math.abs(item.y - fy) < 10) {
               obj.source = item.id;
             }
-            if (Math.abs(item.x - lx) < 30 && Math.abs(item.y - ly) < 30) {
+            if (Math.abs(item.x - lx) < 10 && Math.abs(item.y - ly) < 10) {
               obj.target = item.id;
             }
           });
@@ -733,9 +804,28 @@ export default {
   width: 100vw;
   height: 100vh;
   background: #fffaf0;
+  overflow: hidden;
   .station-info {
+    margin-top: 8px;
     margin-left: 6px;
-    line-height: 40px;
+  }
+  .choose-city {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-width: 1124px;
+    z-index: 1;
+    &--center {
+      position: absolute;
+      left: 50%;
+      top: 4px;
+      transform: translateX(-50%);
+      .select {
+        margin-left: 8px;
+        margin-top: -2px;
+      }
+    }
   }
   .metro-line {
     position: absolute;
@@ -743,6 +833,7 @@ export default {
     left: 0;
     width: 100vw;
     height: 30px;
+    min-width: 1124px;
     background: black;
     display: flex;
     justify-content: center;

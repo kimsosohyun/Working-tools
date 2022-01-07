@@ -244,7 +244,11 @@ export default {
       let top, //列表距最近有定位父级（.select）的高度
         left = selectInput.offsetLeft;
 
-      selectList.style.height = this.displayOptionsNumber * liHeight + "px";
+      let liLength = this.optionList.length;
+      if(liLength > this.displayOptionsNumber) {
+        liLength = this.displayOptionsNumber;
+      }
+      selectList.style.height = liLength * liHeight + "px";
 
       if (this.position == "auto") {
         if (clientTop + selectList.offsetHeight > document.body.clientHeight) {
@@ -325,6 +329,7 @@ export default {
   position: relative;
   vertical-align: middle;
   display: inline-block;
+  width: 128px;
   &-input {
     width: 100%;
     height: 32px;

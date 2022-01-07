@@ -20,8 +20,8 @@
           <div class="dialog-footer">
             <slot name="footer">
               <div class="dialog-footer_btns" :class="{ 'dialog-footer_btns--center': alignCenter }">
-                <button v-if="showCancel">{{ cancelButtonText }}</button>
-                <button v-if="showConfirm">{{ confirmButtonText }}</button>
+                <button v-if="showCancel" @click="cancel">{{ cancelButtonText }}</button>
+                <button v-if="showConfirm" @click="confirm">{{ confirmButtonText }}</button>
               </div>
             </slot>
           </div>
@@ -105,7 +105,7 @@ export default {
           this.$emit("after-close");
         }
       },
-      immediate: false
+      immediate: false //防止初始化时value为false，调用父组件的after-close事件
     }
   },
   data() {
@@ -119,6 +119,13 @@ export default {
     },
     clickClose() {
       this.$emit("input", false);
+    },
+    confirm() {
+      this.$emit("confirm");
+    },
+    cancel() {
+      this.$emit("cancel");
+      this.clickClose();
     }
   }
 };

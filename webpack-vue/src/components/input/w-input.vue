@@ -29,13 +29,17 @@
         <span>{{ this.value.length + "/" + this.maxlength }}</span>
       </div>
     </div>
+
+    <span v-if="!isFocus" class="errText">{{errText}}</span>
   </div>
 </template>
 
 <script>
 import { setCursorPos, transformWidth } from "../lib";
+import validMixins from "../validMixins"
 export default {
   name: "w-input",
+  mixins: [validMixins],
   props: {
     value: {
       type: [String, Number],
@@ -79,7 +83,14 @@ export default {
     suffixIcon: String,
     //输入框允许输入字符正则
     allow: RegExp,
-    valid: [Array, Object],
+    valid: {
+      type: Object,
+      default: ()=>{
+        return {
+          require: true
+        }
+      }
+    },
     //单位
     unit: {
       type: String,
@@ -105,7 +116,8 @@ export default {
       passwordVisible: false,
       valueLen: 0,
       isFocus: false,
-      isZh: false
+      isZh: false,
+      errText: ""
     };
   },
   mounted() {
@@ -211,6 +223,14 @@ export default {
         //加上单位
         this.setInputValue(this.value + " " + this.unit);
       }
+
+      //失焦验证数据
+      const result = this.checkData();
+      if(result) {
+        this.errText = result;
+      }else {
+        this.errText = "";
+      }
     },
     inputChange(event) {
       this.$emit("change", event.target.value);
@@ -229,6 +249,10 @@ export default {
 </script>
 
 <style lang="scss">
+.errText {
+  color: red;
+  line-height: 24px;
+}
 .input {
   position: relative;
   display: inline-block;

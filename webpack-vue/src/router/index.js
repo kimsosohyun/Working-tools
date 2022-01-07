@@ -9,6 +9,7 @@ const Show = () => import("@/components/show");
 const Input = () => import("../pages/Input/Input.vue");
 const Select = () => import("../pages/Select/Select.vue");
 const Dialog = () => import("../pages/Dialog/Dialog.vue");
+const Photo = () => import("../pages/Photo/Photo.vue");
 
 Vue.use(Router)
 
@@ -50,6 +51,10 @@ export default new Router({
     {
       path:"/Dialog",
       component: Dialog
+    },
+    {
+      path:"/Photo",
+      component: Photo
     }
   ]
 })

@@ -19,7 +19,7 @@
         <span class="tab-nav_item">标签2</span>
         <span class="tab-nav_item">标签3</span> -->
       </div>
-      <div class="tab-nav_border" ref="tabNavBorder"></div>
+      <div class="tab-nav_border" ref="tabNavBorder" v-if="value"></div>
     </div>
     <div class="tab-content" ref="tabContent">
       <slot></slot>
@@ -89,7 +89,7 @@ export default {
         this.$nextTick(() => {
           const val = this.value ? this.value : this.navCfgs[0].value;
 
-          if(!this.value) {
+          if (!this.value) {
             this.$emit("input", val); //没有绑定值，我给他赋值
           }
           this.setBorderStyle();
@@ -129,12 +129,12 @@ export default {
       this.$emit("tab-click", tabVNode);
     },
     setBorderStyle() {
-      const navs = this.$refs.tabNavItem,
-        border = this.$refs.tabNavBorder;
-
       //切换后
       this.$nextTick(() => {
-        const activeNav = navs.find(({ className }) => className.includes("active"));
+        const navs = this.$refs.tabNavItem,
+          border = this.$refs.tabNavBorder,
+          activeNav = navs.find(({ className }) => className.includes("active"));
+
         border.style.left = activeNav.offsetLeft + "px";
         border.style.width = activeNav.getBoundingClientRect().width + "px";
       });
@@ -154,6 +154,11 @@ export default {
   watch: {
     // navCfgs() {
     // }
+    value(val) {
+      if (val) {
+        this.setBorderStyle();
+      }
+    }
   }
 };
 </script>
@@ -161,6 +166,8 @@ export default {
 <style lang="scss">
 .w-tabs {
   overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
 }
 .tab-nav {
   margin-bottom: 12px;
