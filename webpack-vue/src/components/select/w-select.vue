@@ -452,17 +452,4 @@ export default {
     }
   }
 }
-
-.el-zoom-in-top-enter-active,
-.el-zoom-in-top-leave-active {
-  opacity: 1;
-  transform: scaleY(1);
-  transition: $--md-fade-transition;
-  // transform-origin: center bottom;
-}
-.el-zoom-in-top-enter,
-.el-zoom-in-top-leave-to {
-  opacity: 0;
-  transform: scaleY(0);
-}
 </style>

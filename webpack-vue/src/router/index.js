@@ -10,6 +10,7 @@ const Input = () => import("../pages/Input/Input.vue");
 const Select = () => import("../pages/Select/Select.vue");
 const Dialog = () => import("../pages/Dialog/Dialog.vue");
 const Photo = () => import("../pages/Photo/Photo.vue");
+const Login = () => import("../pages/Login/Login.vue");
 
 Vue.use(Router)
 
@@ -18,7 +19,7 @@ export default new Router({
     {
       path: "/",
       // component: Svg
-      redirect:"/subway"
+      redirect:"/login"
     },
     {
       path:"/map",
@@ -55,6 +56,10 @@ export default new Router({
     {
       path:"/Photo",
       component: Photo
+    },
+    {
+      path:"/Login",
+      component: Login
     }
   ]
 })

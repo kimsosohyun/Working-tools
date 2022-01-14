@@ -15,7 +15,7 @@ module.exports= {
         //path: 项目打包所存放到的路径，此路径中包含项目所有文件和目录。应该是一个绝对路径。
         //publicPath: 静态文件打包存放的目录。静态文件是指 img 的src ,link ，script 标签等所指向的文件。publicPath 是相对于path 所在的路径。是一个相对路径。
 
-        path: path.resolve(__dirname, '../dist'),//__dirname：以当前文件所在绝对路径为起点，不包含当前文件，__filename包含当前文件
+        path: path.resolve(__dirname, '../../dist'),//__dirname：以当前文件所在绝对路径为起点，不包含当前文件，__filename包含当前文件
         filename: 'js/[name].js',
         publicPath: "/"
     },
@@ -78,6 +78,19 @@ module.exports= {
                     }
                 }]
 
+            },
+            {
+                test: /\.mp4$/,
+                use: [
+                    {
+                        loader: "file-loader",
+                        options: {
+                            name: "[name].[ext]",
+                            outputPath: "video",
+                            esModule: false
+                        }
+                    }
+                ]
             },
             {   //js文件不用做模块处理可以直接打包运行
                 // babel-loader是做一些兼容性处理，让高级语法在浏览器中都能正常运行，如es6转兼容性更好的es5

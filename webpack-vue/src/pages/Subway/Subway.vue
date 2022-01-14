@@ -629,7 +629,7 @@ export default {
       console.log("metroInfo", this.metroInfo[0]);
     },
     getMetroData(city) {
-      axios.get(`${MOCK_HTTP}/goform/get${city}Metro`).then((res) => this.handleDataRes(res));
+      axios.get(`/goform/get${city}Metro`).then((res) => this.handleDataRes(res));
     },
     handleDataRes(res) {
       if (res.status != 200) {

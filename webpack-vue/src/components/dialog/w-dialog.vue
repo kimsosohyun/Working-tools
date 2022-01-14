@@ -20,8 +20,8 @@
           <div class="dialog-footer">
             <slot name="footer">
               <div class="dialog-footer_btns" :class="{ 'dialog-footer_btns--center': alignCenter }">
-                <button v-if="showCancel" @click="cancel">{{ cancelButtonText }}</button>
-                <button v-if="showConfirm" @click="confirm">{{ confirmButtonText }}</button>
+                <w-button v-if="showCancel" @click="cancel">{{ cancelButtonText }}</w-button>
+                <w-button v-if="showConfirm" type="primary" @click="confirm">{{ confirmButtonText }}</w-button>
               </div>
             </slot>
           </div>
@@ -199,55 +199,6 @@ export default {
         text-align: center;
       }
     }
-  }
-}
-
-.dialog-fade-enter-active {
-  animation: pop-fade-in 0.3s;
-}
-.dialog-fade-leave-active {
-  animation: pop-fade-out 0.3s;
-}
-@keyframes pop-fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes pop-fade-out {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-.dialog-inner-fade-enter-active {
-  animation: dialog-inner-fade-in 0.3s;
-}
-.dialog-inner-fade-leave-active {
-  animation: dialog-out-fade-out 0.3s;
-}
-@keyframes dialog-inner-fade-in {
-  0% {
-    transform: translate3d(-60%, -50%, 0);
-  }
-
-  100% {
-    transform: translate3d(-50%, -50%, 0);
-  }
-}
-@keyframes dialog-out-fade-out {
-  0% {
-    transform: translate3d(-50%, -50%, 0);
-  }
-
-  100% {
-    transform: translate3d(-60%, -50%, 0);
   }
 }
 </style>

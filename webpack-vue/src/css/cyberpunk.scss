@@ -1,0 +1,162 @@
+:root {
+  --yellow-color: rgba(34, 114, 216, 0.8);
+  --border-color: rgb(250, 120, 216);
+  //rgb(95, 92, 132)
+}
+
+.cyberpunk {
+  padding: 5px;
+  position: relative;
+  font-size: 1.2rem;
+  color: var(--yellow-color);
+  border: 30px solid rgba(34, 114, 216, 1);
+  border-right: 5px solid rgba(34, 114, 216, 1);
+  border-left: 5px solid rgba(34, 114, 216, 1);
+  border-bottom: 24px solid rgba(34, 114, 216, 1);
+  background-color: #000;
+  clip-path: polygon(0px 25px, 26px 0px, calc(60% - 25px) 0px, 60% 25px, 100% 25px, 100% calc(100% - 10px), calc(100% - 15px) calc(100% - 10px), calc(80% - 10px) calc(100% - 10px), calc(80% - 15px) 100%, 80px calc(100% - 0px), 65px calc(100% - 15px), 0% calc(100% - 15px));
+}
+
+.cyberpunk.inverse {
+  border: none;
+  padding: 25px 10px 18px;
+  color: #000;
+  background-color: var(--yellow-color);
+  border-right: 2px solid var(--border-color);
+}
+
+.dotted,
+.dotted:before,
+.dotted:after {
+  background: var(--yellow-color);
+  background-image: radial-gradient(#00000021 1px, transparent 0);
+  background-size: 5px 5px;
+  background-position: -13px -3px;
+}
+
+/* 文本框右侧小编号样式 */
+.cyberpunk:before {
+  content: "P-14";
+  display: block;
+  position: absolute;
+  bottom: -12px;
+  right: 25px;
+  padding: 2px 2px 0px 2px;
+  font-size: 0.6rem;
+  line-height: 0.6rem;
+  color: #fff;
+  background-color: var(--yellow-color);
+  border-left: 2px solid var(--border-color);
+}
+
+.cyberpunk.inverse:before {
+  content: "T-71";
+  right: 90px;
+  bottom: 9px;
+}
+
+.cyberpunk.inverse:before,
+.cyberpunk:before {
+  background-color: #000;
+  color: var(--border-color);
+}
+
+.neon {
+  text-shadow: 0 0 3vw #F4BD0A;
+  animation: neon 2s ease-in-out infinite;
+}
+.flux {
+  text-shadow: 0 0 3vw #179E05;
+  animation: flux 2s linear infinite;
+}
+@keyframes neon {
+  0%, 100% {
+    text-shadow: 0 0 1vw #FA1C16, 0 0 3vw #FA1C16, 0 0 10vw #FA1C16, 0 0 10vw #FA1C16, 0 0 .4vw #FED128, .5vw .5vw .1vw #806914;
+    color: #FFFC00;
+  }
+  50% {
+    text-shadow: 0 0 .5vw #800E0B, 0 0 1.5vw #800E0B, 0 0 5vw #800E0B, 0 0 5vw #800E0B, 0 0 .2vw #800E0B, .5vw .5vw .1vw #40340A;
+    color: #806914;
+  }
+}
+@keyframes flux {
+  0%, 100% {
+    text-shadow: 0 0 1vw #10ff4c, 0 0 3vw #1041FF, 0 0 10vw #1041FF, 0 0 10vw #1041FF, 0 0 .4vw #8BFDFE, .5vw .5vw .1vw #147280;
+    color: #03C03C;
+  }
+  50% {
+    text-shadow: 0 0 .5vw #024218, 0 0 1.5vw #024713, 0 0 5vw #023812, 0 0 5vw #012707, 0 0 .2vw #022201, .5vw .5vw .1vw #011a06;
+    color: #179E05;
+  }
+}
+h1.cyberpunk {
+  position: relative;
+}
+h1.cyberpunk:before {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  left: 2px;
+  width: 100%;
+  height: 10px;
+  background-color: #000;
+  clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 100% 6px, 85px 6px, 80px 10px, 0px 10px);
+}
+h1.cyberpunk.glitched {
+  animation-name: glitched;
+  animation-duration: calc(.9s * 1.4);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes glitched {
+  0% { left: -4px; transform: skew(-20deg); }
+  11% { left: 2px; transform: skew(0deg); }
+  50% { transform: skew(0deg); }
+  51% { transform: skew(10deg); }
+  60% { transform: skew(0deg); }
+  100% { transform: skew(0deg); }
+}
+h1.cyberpunk.glitched:before {
+  animation-name: beforeglitched;
+  animation-duration: calc(.9s * 2);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@keyframes beforeglitched {
+  0% {
+    left: -4px;
+    transform: skew(-20deg);
+    clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 100% 6px, 85px 6px, 80px 10px, 0px 10px);
+  }
+  11% {
+    left: 2px;
+    transform: skew(0deg);
+    clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 100% 6px, 85px 6px, 80px 10px, 0px 10px);
+  }
+  50% {
+    transform: skew(0deg);
+    clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 100% 6px, 85px 6px, 80px 10px, 0px 10px);
+  }
+  51% {
+    transform: skew(0deg);
+    clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 40% 5px, calc(40% - 30px) 0px, calc(40% + 30px) 0px, calc(45% - 15px) 5px, 100% 5px, 100% 6px, calc(45% - 14px) 6px, calc(40% + 29px) 1px, calc(40% - 29px) 1px, calc(40% + 1px) 6px, 85px 6px, 80px 10px, 0px 10px);
+  }
+  60% {
+    transform: skew(0deg);
+    clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 100% 6px, 85px 6px, 80px 10px, 0px 10px);
+  }
+  100% {
+    transform: skew(0deg);
+    clip-path: polygon(0px 0px, 85px 0px, 90px 5px, 100% 5px, 100% 6px, 85px 6px, 80px 10px, 0px 10px);
+  }
+}
+#waifu-tips {
+  display: none;
+}
+#waifu {
+  z-index: 1000;
+}
+#waifu-tool {
+display: none;
+}
