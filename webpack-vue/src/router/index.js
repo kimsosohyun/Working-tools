@@ -9,57 +9,66 @@ const Show = () => import("@/components/show");
 const Input = () => import("../pages/Input/Input.vue");
 const Select = () => import("../pages/Select/Select.vue");
 const Dialog = () => import("../pages/Dialog/Dialog.vue");
+const Button = () => import("../pages/Button/Button.vue");
 const Photo = () => import("../pages/Photo/Photo.vue");
 const Login = () => import("../pages/Login/Login.vue");
+const Date = () => import("../pages/Date/Date.vue");
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
+  routes: [{
       path: "/",
       // component: Svg
-      redirect:"/login"
+      redirect: "/show"
     },
     {
-      path:"/map",
+      path: "/map",
       component: Map
     },
     {
-      path:"/subway",
+      path: "/subway",
       component: Subway
     },
     {
-      path:"/svg",
+      path: "/svg",
       component: Svg
     },
     {
-      path:"/home",
+      path: "/home",
       component: Home
     },
     {
-      path:"/show",
+      path: "/show",
       component: Show
     },
     {
-      path:"/input",
+      path: "/input",
       component: Input
     },
     {
-      path:"/select",
+      path: "/select",
       component: Select
     },
     {
-      path:"/Dialog",
+      path: "/Dialog",
       component: Dialog
     },
     {
-      path:"/Photo",
+      path: "/Photo",
       component: Photo
     },
     {
-      path:"/Login",
+      path: "/Login",
       component: Login
+    },
+    {
+      path: "/Button",
+      component: Button
+    }, 
+    {
+      path: "/Date",
+      component: Date
     }
   ]
 })

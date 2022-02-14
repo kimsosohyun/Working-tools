@@ -29,7 +29,7 @@ export default {
   },
   mounted() {
     const width = document.documentElement.clientWidth,
-      style = document.styleSheets[4],
+      style = document.styleSheets[2],
       param = -3180 + width - 48;
 
     if (this.needDelete) {

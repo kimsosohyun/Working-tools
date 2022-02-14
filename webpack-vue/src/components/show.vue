@@ -1,85 +1,71 @@
 <template>
   <div>
     <div>
-      <w-button
-      @click="test"
-        type="primary"
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        >111</w-button
-      >
-      <w-button
-         @click="test"
-        type="primary"
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        :is-loading="true"
-        :disabled='true'
-        >111</w-button
-      >
-      <w-button
-         @click="test"
-      
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        type="info"
-        >111</w-button
-      >
+      <w-table :data="tableData">
+        <w-table-col prop="ssid" label="SSID" width="100px"></w-table-col>
+        <w-table-col prop="id" label="id"></w-table-col>
+        <w-table-col prop="name" label="name"></w-table-col>
+        <w-table-col prop="age" label="age"></w-table-col>
+        <w-table-col prop="gender" label="gender"></w-table-col>
+      </w-table>
 
-      <w-button
-         @click="test"
-       :disabled='true'
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        type="text"
-        >111</w-button
-      >
-    </div>
-
-    <div style="margin-top: 10px">
-      <v-button
-         @click="test"
-        type="primary"
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        >111</v-button
-      >
-      <v-button disabled type="primary" icon="icon-topo-router" :is-loading="true"
-        >111</v-button
-      >
-      <v-button
-         @click="test"
-    
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        type="info"
-        >111</v-button
-      >
-
-      <v-button
-         @click="test"
-       :disabled='true'
-        icon="icon-topo-router"
-        suffix-icon="icon-topo-switch"
-        type="text"
-        >111</v-button
-      >
+      <v-table :data="tableData">
+        <v-table-col prop="ssid" label="SSID" width="20px"></v-table-col>
+        <v-table-col prop="id" label="id"></v-table-col>
+        <v-table-col prop="name" label="name"></v-table-col>
+        <v-table-col prop="age" label="age"></v-table-col>
+        <v-table-col prop="gender" label="gender"></v-table-col>
+      </v-table>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  mounted() {
-    document.getElementsByClassName("fa-times")[0].click();
-  },
-    methods: {
-        test() {
-          this.$router.push("/photo")
+  data() {
+    return {
+      tableData: [
+        {
+          ssid: "ssid1",
+          id: "1",
+          name: "jack",
+          age: "12",
+          gender: "男"
+        },
+        {
+          name: "tom",
+          age: "22",
+          gender: "女",
+          ssid: "ssid2",
+          id: "2"
         }
-    }
+      ]
+    };
+  },
+  computed: {},
+  methods: {}
 };
 </script>
 
-<style>
+<style lang="scss">
+.date-list {
+  width: 700px;
+  li {
+    width: 96px;
+    height: 96px;
+    float: left;
+    border: 1px solid black;
+    margin: 2px;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 96px;
+  }
+}
+.pre,
+.next {
+  color: #d8d8d8;
+}
+.day-now {
+  background: pink;
+}
 </style>
